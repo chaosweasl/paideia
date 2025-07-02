@@ -47,10 +47,28 @@
    ```
    NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
    NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+   # Set this to your production domain when deploying (e.g., https://yourdomain.com)
+   # For development, this defaults to http://localhost:3000 if not set
+   NEXT_PUBLIC_SITE_URL=http://localhost:3000
    # Add your AI API key as needed
    ```
 
-4. **Run the development server:**
+4. **Configure Supabase Authentication:**
+
+   In your Supabase project dashboard:
+   
+   1. Go to **Authentication** → **URL Configuration**
+   2. Set the **Site URL** to:
+      - Development: `http://localhost:3000`
+      - Production: `https://yourdomain.com` (replace with your actual domain)
+   3. Add **Redirect URLs**:
+      - Development: `http://localhost:3000/auth/confirm`
+      - Production: `https://yourdomain.com/auth/confirm`
+   4. Save the configuration
+
+   **Important**: The code will automatically use the correct redirect URL based on your `NEXT_PUBLIC_SITE_URL` environment variable, but you still need to configure the allowed redirect URLs in the Supabase dashboard for security.
+
+5. **Run the development server:**
 
    ```sh
    npm run dev
@@ -58,7 +76,7 @@
    yarn dev
    ```
 
-5. **Open [http://localhost:3000](http://localhost:3000) in your browser.**
+6. **Open [http://localhost:3000](http://localhost:3000) in your browser.**
 
 ## Project Structure
 

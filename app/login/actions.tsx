@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
+import { getAuthConfirmUrl } from "@/utils/site-url";
 
 /* TODO: add more robust validation as needed */
 
@@ -55,7 +56,13 @@ export async function signup(formData: FormData) {
     return { error: "Password must be at least 6 characters." };
   }
 
-  const { error } = await supabase.auth.signUp({ email, password });
+  const { error } = await supabase.auth.signUp({ 
+    email, 
+    password,
+    options: {
+      emailRedirectTo: getAuthConfirmUrl()
+    }
+  });
 
   if (error) {
     // Return error message for client to display
