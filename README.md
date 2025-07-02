@@ -50,6 +50,10 @@
    # Add your AI API key as needed
    ```
 
+   **Note:** Email confirmation redirects are automatically configured:
+   - Development: `http://localhost:3000/auth/confirm`
+   - Production: `https://paideia-chaosweasl.vercel.app/auth/confirm`
+
 4. **Run the development server:**
 
    ```sh
