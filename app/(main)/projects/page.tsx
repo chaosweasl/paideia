@@ -71,7 +71,11 @@ export default function ProjectsPage() {
   // Create and redirect to new project
   const handleNewProject = () => {
     startTransition(async () => {
-      const id = await createProject({ name: "Untitled Project", description: "", flashcards: [] });
+      const id = await createProject({
+        name: "Untitled Project",
+        description: "",
+        flashcards: [],
+      });
       if (id) router.push(`/projects/${id}/edit`);
     });
   };
