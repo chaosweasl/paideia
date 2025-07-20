@@ -1,5 +1,4 @@
 import { getProjectById } from "../../actions";
-import { SidebarNavClient } from "../../components/SidebarNavClient";
 import { notFound } from "next/navigation";
 import { FlashcardEditorClient } from "../../components/FlashcardEditorClient";
 
