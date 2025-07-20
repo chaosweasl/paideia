@@ -7,24 +7,35 @@ interface SidebarNavProps {
   onTab: (tab: "all" | "create") => void;
 }
 
-export const SidebarNav: React.FC<SidebarNavProps> = ({ activeTab, onTab }) => (
-  <nav className="flex flex-col p-4 gap-2 h-full">
+export const SidebarNav: React.FC<SidebarNavProps & { mobile?: boolean }> = ({
+  activeTab,
+  onTab,
+  mobile,
+}) => (
+  <nav
+    className={
+      mobile
+        ? "flex flex-row w-full justify-around"
+        : "flex flex-col p-6 gap-2 h-full"
+    }
+  >
     <button
-      className={`btn btn-ghost justify-start ${
-        activeTab === "all" ? "bg-base-300" : ""
-      }`}
+      className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition bg-transparent hover:bg-primary/10 text-base-content/80 hover:text-primary ${
+        activeTab === "all" ? "bg-primary/10 text-primary" : ""
+      } ${mobile ? "flex-1 justify-center" : "justify-start"}`}
       onClick={() => onTab("all")}
     >
-      <Layers className="w-4 h-4 mr-2" /> All Projects
+      <Layers className="w-5 h-5 mr-1" />{" "}
+      <span className={mobile ? "hidden sm:inline" : ""}>All Projects</span>
     </button>
     <button
-      className={`btn btn-ghost justify-start ${
-        activeTab === "create" ? "bg-base-300" : ""
-      }`}
+      className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition bg-transparent hover:bg-primary/10 text-base-content/80 hover:text-primary ${
+        activeTab === "create" ? "bg-primary/10 text-primary" : ""
+      } ${mobile ? "flex-1 justify-center" : "justify-start"}`}
       onClick={() => onTab("create")}
     >
-      <Plus className="w-4 h-4 mr-2" /> Create New
+      <Plus className="w-5 h-5 mr-1" />{" "}
+      <span className={mobile ? "hidden sm:inline" : ""}>Create New</span>
     </button>
-    {/* Future: <button className="btn btn-ghost justify-start">Archived</button> */}
   </nav>
 );

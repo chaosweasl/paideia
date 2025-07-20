@@ -46,22 +46,22 @@ export const ProjectDrawer: React.FC<ProjectDrawerProps> = ({
 }) => {
   if (!open) return null;
   return (
-    <div className="fixed right-0 top-0 h-full w-full max-w-2xl bg-base-100 border-l border-base-300 shadow-lg z-50 animate-slide-in flex flex-col">
-      <div className="flex items-center justify-between p-4 border-b border-base-300">
-        <h2 className="text-xl font-bold">
+    <div className="fixed right-0 top-0 h-full w-full max-w-2xl bg-white/95 dark:bg-[#18181b]/95 border-l border-base-300 shadow-2xl z-50 animate-slide-in flex flex-col rounded-l-3xl overflow-hidden">
+      <div className="flex items-center justify-between p-6 border-b border-base-200 bg-white/80 dark:bg-[#23232a]/80">
+        <h2 className="text-2xl font-extrabold tracking-tight text-base-content">
           {editing ? "Edit Project" : "New Project"}
         </h2>
         <button
-          className="btn btn-sm btn-ghost"
+          className="btn btn-circle btn-ghost text-xl text-base-content/60 hover:text-error"
           onClick={onClose}
           aria-label="Close"
         >
-          ✕
+          ×
         </button>
       </div>
       <form
         onSubmit={onSubmit}
-        className="flex flex-col md:flex-row gap-8 p-4 flex-1 overflow-y-auto"
+        className="flex flex-col md:flex-row gap-8 p-6 flex-1 overflow-y-auto"
       >
         {/* Meta panel */}
         <div className="flex flex-col gap-4 md:w-1/3 sticky top-6 self-start">
@@ -72,7 +72,7 @@ export const ProjectDrawer: React.FC<ProjectDrawerProps> = ({
             value={form.name}
             onChange={onFormChange}
             required
-            className="input input-bordered"
+            className="input input-bordered input-lg rounded-xl shadow-sm focus:ring-2 focus:ring-primary/30"
             disabled={loading}
           />
           <textarea
@@ -80,7 +80,7 @@ export const ProjectDrawer: React.FC<ProjectDrawerProps> = ({
             placeholder="Description"
             value={form.description}
             onChange={onFormChange}
-            className="textarea textarea-bordered"
+            className="textarea textarea-bordered rounded-xl shadow-sm focus:ring-2 focus:ring-primary/30 min-h-[90px]"
             disabled={loading}
           />
         </div>
