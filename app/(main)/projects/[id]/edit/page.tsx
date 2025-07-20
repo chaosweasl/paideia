@@ -12,16 +12,11 @@ export default async function ProjectEditPage(props: {
   if (!project) return notFound();
 
   return (
-    <div className="flex min-h-screen bg-base-100">
-      <SidebarNavClient />
-      <div className="flex-1 flex flex-col min-h-screen">
-        <main className="flex-1 p-8 overflow-auto">
-          <FlashcardEditorClient
-            project={{ ...project, flashcards: project.flashcards ?? [] }}
-          />
-        </main>
-      </div>
-    </div>
+    <main className="flex-1 p-8 overflow-auto">
+      <FlashcardEditorClient
+        project={{ ...project, flashcards: project.flashcards ?? [] }}
+      />
+    </main>
   );
 }
 // If you want to keep it sync, you must fetch data in a parent or via props.

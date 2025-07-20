@@ -116,104 +116,62 @@ export default function ProjectsPage() {
 
   // --- Layout ---
   return (
-    <div className="min-h-screen flex bg-gradient-to-br from-base-100 to-base-200 dark:from-[#18181b] dark:to-[#23232a]">
-      {/* SidebarNav: glassy, minimal, responsive */}
-      <aside className="hidden md:flex w-64 flex-shrink-0 h-screen sticky top-0 z-30 bg-white/70 dark:bg-[#18181b]/80 backdrop-blur border-r border-base-200 shadow-sm flex-col">
-        <div className="flex items-center justify-center h-20 border-b border-base-200">
-          <span className="font-extrabold text-xl tracking-tight text-primary">
-            Projects
-          </span>
-        </div>
-        <SidebarNav
-          activeTab={
-            projectManager.editing
-              ? Tabs.ALL
-              : projectManager.open
-              ? Tabs.CREATE
-              : Tabs.ALL
-          }
-          onTab={handleTab}
-        />
-      </aside>
-      {/* Mobile sidebar */}
-      <aside className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/90 dark:bg-[#18181b]/90 border-t border-base-200 flex justify-around py-2 shadow-lg">
-        <SidebarNav
-          activeTab={
-            projectManager.editing
-              ? Tabs.ALL
-              : projectManager.open
-              ? Tabs.CREATE
-              : Tabs.ALL
-          }
-          onTab={handleTab}
-          mobile
-        />
-      </aside>
-      {/* Main column: header + main content, flex-1 */}
-      <div className="flex-1 flex flex-col min-h-screen">
-        {/* Header: persistent, always at top */}
-        <header className="h-20 flex items-center px-6 md:px-10 border-b border-base-200 bg-white/80 dark:bg-[#18181b]/80 backdrop-blur sticky top-0 z-20 shadow-sm">
-          <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-base-content">
-            Your Projects
-          </h1>
-        </header>
-        {/* Main content: scrollable, fills rest of page */}
-        <main className="flex-1 overflow-y-auto px-2 py-6 md:px-10 md:py-10 transition-all">
-          {loading ? (
-            <div className="flex items-center gap-2 h-40 justify-center">
-              <Loader2 className="animate-spin w-5 h-5 text-primary" />{" "}
-              Loading...
-            </div>
-          ) : projects.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-full min-h-[60vh]">
-              <EmptyState onNewProject={() => handleTab("create")} />
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
-              <ProjectList projects={projects} handleDelete={handleDelete} />
-            </div>
-          )}
-          {error && (
-            <p className="text-error mt-4 text-center text-lg font-semibold">
-              {error}
-            </p>
-          )}
-          <Toaster position="top-center" />
+    <>
+      {/* Main content: scrollable, fills rest of page */}
+      <main className="flex-1 overflow-y-auto px-2 py-6 md:px-10 md:py-10 transition-all">
+        {loading ? (
+          <div className="flex items-center gap-2 h-40 justify-center">
+            <Loader2 className="animate-spin w-5 h-5 text-primary" /> Loading...
+          </div>
+        ) : projects.length === 0 ? (
+          <div className="flex flex-col items-center justify-center h-full min-h-[60vh]">
+            <EmptyState onNewProject={() => handleTab("create")} />
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
+            <ProjectList projects={projects} handleDelete={handleDelete} />
+          </div>
+        )}
+        {error && (
+          <p className="text-error mt-4 text-center text-lg font-semibold">
+            {error}
+          </p>
+        )}
+        <Toaster position="top-center" />
 
-          {/* In-page drawer/panel for create/edit */}
-          <ProjectDrawer
-            open={projectManager.open}
-            editing={projectManager.editing}
-            form={form}
-            loading={loading}
-            error={error}
-            onClose={closePanel}
-            onFormChange={(e) =>
-              setForm((f) => ({ ...f, [e.target.name]: e.target.value }))
-            }
-            onFlashcardChange={(idx, field, value) => {
-              setForm((f) => {
-                const flashcards = [...f.flashcards];
-                flashcards[idx] = { ...flashcards[idx], [field]: value };
-                return { ...f, flashcards };
-              });
-            }}
-            onAddFlashcard={() =>
-              setForm((f) => ({
-                ...f,
-                flashcards: [...f.flashcards, { question: "", answer: "" }],
-              }))
-            }
-            onRemoveFlashcard={(idx) =>
-              setForm((f) => ({
-                ...f,
-                flashcards: f.flashcards.filter((_, i) => i !== idx),
-              }))
-            }
-            onSubmit={handleFormSubmit}
-          />
-        </main>
-      </div>
-    </div>
+        {/* In-page drawer/panel for create/edit */}
+        <ProjectDrawer
+          open={projectManager.open}
+          editing={projectManager.editing}
+          form={form}
+          loading={loading}
+          error={error}
+          onClose={closePanel}
+          onFormChange={(e) =>
+            setForm((f) => ({ ...f, [e.target.name]: e.target.value }))
+          }
+          onFlashcardChange={(idx, field, value) => {
+            setForm((f) => {
+              const flashcards = [...f.flashcards];
+              flashcards[idx] = { ...flashcards[idx], [field]: value };
+              return { ...f, flashcards };
+            });
+          }}
+          onAddFlashcard={() =>
+            setForm((f) => ({
+              ...f,
+              flashcards: [...f.flashcards, { question: "", answer: "" }],
+            }))
+          }
+          onRemoveFlashcard={(idx) =>
+            setForm((f) => ({
+              ...f,
+              flashcards: f.flashcards.filter((_, i) => i !== idx),
+            }))
+          }
+          onSubmit={handleFormSubmit}
+        />
+      </main>
+    </>
   );
 }

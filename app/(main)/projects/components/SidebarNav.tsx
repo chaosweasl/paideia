@@ -25,8 +25,7 @@ export const SidebarNav: React.FC<SidebarNavProps & { mobile?: boolean }> = ({
       } ${mobile ? "flex-1 justify-center" : "justify-start"}`}
       onClick={() => onTab("all")}
     >
-      <Layers className="w-5 h-5 mr-1" />{" "}
-      <span className={mobile ? "hidden sm:inline" : ""}>All Projects</span>
+      <Layers className="w-5 h-5 mr-1" /> <span>All Projects</span>
     </button>
     <button
       className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition bg-transparent hover:bg-primary/10 text-base-content/80 hover:text-primary ${
@@ -34,8 +33,7 @@ export const SidebarNav: React.FC<SidebarNavProps & { mobile?: boolean }> = ({
       } ${mobile ? "flex-1 justify-center" : "justify-start"}`}
       onClick={() => onTab("create")}
     >
-      <Plus className="w-5 h-5 mr-1" />{" "}
-      <span className={mobile ? "hidden sm:inline" : ""}>Create New</span>
+      <Plus className="w-5 h-5 mr-1" /> <span>Create New</span>
     </button>
   </nav>
 );
