@@ -4,10 +4,11 @@ import { notFound } from "next/navigation";
 import { FlashcardEditorClient } from "../../components/FlashcardEditorClient";
 
 export default async function ProjectEditPage(props: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
   const { params } = props;
-  const project = await getProjectById(params.id);
+  const { id } = await params;
+  const project = await getProjectById(id);
   if (!project) return notFound();
 
   return (
