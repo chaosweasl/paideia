@@ -35,7 +35,7 @@ export default function ProjectsLayout({
         <SidebarNav activeTab="all" onTab={handleTab} />
       </div>
       {/* Mobile sidebar */}
-      <aside className="md:hidden fixed bottom-0 left-0 right-0 z-40 border-t border-base-200 flex justify-around py-2 shadow-lg bg-base-100">
+      <aside className="md:hidden fixed bottom-0 left-0 right-0 z-40 flex justify-around py-2 shadow-lg">
         <SidebarNav activeTab="all" onTab={handleTab} mobile />
       </aside>
       <div className="flex-1 flex flex-col min-h-screen">{children}</div>
