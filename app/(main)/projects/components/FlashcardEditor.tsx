@@ -89,7 +89,7 @@ export function FlashcardEditor({ project, onSave }: FlashcardEditorProps) {
           Cancel
         </button>
         <button
-          className="btn btn-success btn-lg shadow-md"
+          className="btn btn-success btn-md shadow-md"
           onClick={handleSave}
           disabled={saving}
         >
