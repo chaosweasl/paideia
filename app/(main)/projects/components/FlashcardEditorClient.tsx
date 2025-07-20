@@ -1,6 +1,5 @@
 "use client";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { updateProject } from "../actions";
 import { Project, Flashcard } from "../utils/normalizeProject";
 import { FlashcardEditor } from "./FlashcardEditor";
@@ -13,7 +12,6 @@ export function FlashcardEditorClient({ project }: FlashcardEditorClientProps) {
   const [name, setName] = useState(project.name);
   const [description, setDescription] = useState(project.description);
   const [saving, setSaving] = useState(false);
-  const router = useRouter();
 
   async function handleSave(flashcards: Flashcard[]) {
     setSaving(true);
@@ -24,7 +22,6 @@ export function FlashcardEditorClient({ project }: FlashcardEditorClientProps) {
       flashcards,
     });
     setSaving(false);
-    router.push("/projects");
   }
 
   return (

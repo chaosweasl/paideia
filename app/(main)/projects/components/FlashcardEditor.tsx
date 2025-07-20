@@ -35,7 +35,6 @@ export function FlashcardEditor({ project, onSave }: FlashcardEditorProps) {
     setSaving(true);
     await onSave(flashcards);
     setSaving(false);
-    router.push("/projects");
   }
 
   function handleCancel() {
