@@ -6,7 +6,7 @@ interface EmptyStateProps {
 }
 
 export const EmptyState: React.FC<EmptyStateProps> = ({ onNewProject }) => (
-  <div className="flex flex-col items-center justify-center h-[60vh] text-center text-base-content/70">
+  <div className="flex flex-col items-center justify-center flex-1 h-full text-center text-base-content/70">
     <BookOpen
       size={80}
       className="mx-auto mb-4 text-base-300 dark:text-base-400"

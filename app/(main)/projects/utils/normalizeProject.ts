@@ -1,4 +1,7 @@
-import { Flashcard } from "../utils/useProjectForm";
+export type Flashcard = {
+  question: string;
+  answer: string;
+};
 
 export type RawProject = {
   id: string;

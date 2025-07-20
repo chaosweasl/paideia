@@ -1,5 +1,6 @@
 import { BookOpen, Edit2, Trash2 } from "lucide-react";
 import React from "react";
+import Link from "next/link";
 
 type Flashcard = {
   question: string;
@@ -10,25 +11,16 @@ import type { Project } from "../utils/normalizeProject";
 
 interface ProjectCardProps {
   project: Project;
-  onEdit: (project: Project) => void;
   onDelete: (id: string) => void;
 }
 
 export const ProjectCard: React.FC<ProjectCardProps> = ({
   project,
-  onEdit,
   onDelete,
 }) => {
   return (
-    <div
-      className="bg-base-200 rounded-xl shadow p-5 flex flex-col gap-3 border border-base-300 relative h-full min-h-[180px] transition-transform duration-150 hover:scale-[1.025]"
-      style={{
-        minHeight: "180px",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "space-between",
-      }}
-    >
+    <div className="card relative h-40 min-h-[10rem] bg-base-200 rounded-xl shadow p-5 flex flex-col gap-3 border border-base-300 transition-transform duration-150 hover:scale-[1.025] group overflow-hidden">
+      {/* Card content */}
       <div className="flex items-center justify-between">
         <h2
           className="text-xl font-bold flex-1 truncate max-w-[60%]"
@@ -58,19 +50,21 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
       <p className="text-xs text-base-content/50 mb-2 truncate">
         Created: {project.formattedCreatedAt}
       </p>
-      <div className="flex gap-2 mt-auto">
-        <button
-          className="btn btn-xs btn-outline flex items-center gap-1"
-          onClick={() => onEdit(project)}
-        >
-          <Edit2 className="w-3 h-3" /> Edit
-        </button>
-        <button
-          className="btn btn-xs btn-error flex items-center gap-1"
-          onClick={() => onDelete(project.id)}
-        >
-          <Trash2 className="w-3 h-3" /> Delete
-        </button>
+      {/* Overlay for actions, appears on hover */}
+      <div className="overlay absolute inset-0 bg-base-200/90 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10">
+        <div className="flex gap-2">
+          <Link href={`/projects/${project.id}/edit`}>
+            <button className="btn btn-xs btn-outline flex items-center gap-1">
+              <Edit2 className="w-3 h-3" /> Edit
+            </button>
+          </Link>
+          <button
+            className="btn btn-xs btn-error flex items-center gap-1"
+            onClick={() => onDelete(project.id)}
+          >
+            <Trash2 className="w-3 h-3" /> Delete
+          </button>
+        </div>
       </div>
     </div>
   );

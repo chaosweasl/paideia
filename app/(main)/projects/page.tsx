@@ -1,21 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useProjectForm, Flashcard } from "./utils/useProjectForm";
-import { Project } from "./utils/normalizeProject";
+import { Flashcard } from "./utils/useProjectForm";
 import { useProjects } from "./hooks/useProjects";
 import { useProjectManager } from "./hooks/useProjectManager";
 import { useUnsavedChangesWarning } from "./hooks/useUnsavedChangesWarning";
 import { deepEqual } from "./utils/deepEqual";
 import { Tabs } from "./utils/tabs";
-import { formatDate } from "./utils/formatDate";
 import { Loader2 } from "lucide-react";
-import {
-  createProject,
-  getProjects,
-  updateProject,
-  deleteProject,
-} from "./actions";
 import { ProjectList } from "./components/ProjectList";
 import toast, { Toaster } from "react-hot-toast";
 import { ProjectDrawer } from "./components/ProjectDrawer";
@@ -35,11 +27,9 @@ export default function ProjectsPage() {
     updateProjectById,
     deleteProjectById,
     fetchProjects,
-    setError,
     undoDelete,
   } = useProjects();
   const projectManager = useProjectManager();
-  // Fetch projects on mount
   useEffect(() => {
     fetchProjects();
   }, [fetchProjects]);
@@ -74,21 +64,6 @@ export default function ProjectsPage() {
       setOriginalForm(null);
       projectManager.close();
     }
-  };
-
-  // Edit logic
-  const openEditPanel = (project: Project) => {
-    setForm({
-      name: project.name,
-      description: project.description,
-      flashcards: project.flashcards,
-    });
-    setOriginalForm({
-      name: project.name,
-      description: project.description,
-      flashcards: project.flashcards,
-    });
-    projectManager.openEdit(project.id);
   };
 
   // Close panel logic
@@ -139,73 +114,80 @@ export default function ProjectsPage() {
     );
   };
 
+  // --- Layout ---
   return (
     <div className="min-h-screen flex bg-base-100">
-      {/* Sidebar */}
-      <SidebarNav
-        activeTab={
-          projectManager.editing
-            ? Tabs.ALL
-            : projectManager.open
-            ? Tabs.CREATE
-            : Tabs.ALL
-        }
-        onTab={handleTab}
-      />
-      {/* Main Content */}
-      <main className="flex-1 p-8">
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-3xl font-bold">Your Projects</h1>
-        </div>
-        {loading ? (
-          <div className="flex items-center gap-2">
-            <Loader2 className="animate-spin w-5 h-5" /> Loading...
-          </div>
-        ) : projects.length === 0 ? (
-          <EmptyState onNewProject={() => handleTab("create")} />
-        ) : (
-          <ProjectList
-            projects={projects}
-            openEditPanel={openEditPanel}
-            handleDelete={handleDelete}
-          />
-        )}
-        {error && <p className="text-error mt-4">{error}</p>}
-        <Toaster position="top-center" />
-
-        {/* In-page drawer/panel for create/edit */}
-        <ProjectDrawer
-          open={projectManager.open}
-          editing={projectManager.editing}
-          form={form}
-          loading={loading}
-          error={error}
-          onClose={closePanel}
-          onFormChange={(e) =>
-            setForm((f) => ({ ...f, [e.target.name]: e.target.value }))
+      {/* SidebarNav: fixed width, persistent */}
+      <aside className="w-64 flex-shrink-0 border-r border-base-200 bg-base-100 h-screen sticky top-0 z-20">
+        <SidebarNav
+          activeTab={
+            projectManager.editing
+              ? Tabs.ALL
+              : projectManager.open
+              ? Tabs.CREATE
+              : Tabs.ALL
           }
-          onFlashcardChange={(idx, field, value) => {
-            setForm((f) => {
-              const flashcards = [...f.flashcards];
-              flashcards[idx] = { ...flashcards[idx], [field]: value };
-              return { ...f, flashcards };
-            });
-          }}
-          onAddFlashcard={() =>
-            setForm((f) => ({
-              ...f,
-              flashcards: [...f.flashcards, { question: "", answer: "" }],
-            }))
-          }
-          onRemoveFlashcard={(idx) =>
-            setForm((f) => ({
-              ...f,
-              flashcards: f.flashcards.filter((_, i) => i !== idx),
-            }))
-          }
-          onSubmit={handleFormSubmit}
+          onTab={handleTab}
         />
-      </main>
+      </aside>
+      {/* Main column: header + main content, flex-1 */}
+      <div className="flex-1 flex flex-col min-h-screen">
+        {/* Header: persistent, always at top */}
+        <header className="h-20 flex items-center px-8 border-b border-base-200 bg-base-100 sticky top-0 z-10">
+          <h1 className="text-3xl font-bold">Your Projects</h1>
+        </header>
+        {/* Main content: scrollable, fills rest of page */}
+        <main className="flex-1 overflow-y-auto p-8">
+          {loading ? (
+            <div className="flex items-center gap-2 h-40 justify-center">
+              <Loader2 className="animate-spin w-5 h-5" /> Loading...
+            </div>
+          ) : projects.length === 0 ? (
+            <div className="flex flex-col items-center justify-center h-full min-h-[60vh]">
+              <EmptyState onNewProject={() => handleTab("create")} />
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              <ProjectList projects={projects} handleDelete={handleDelete} />
+            </div>
+          )}
+          {error && <p className="text-error mt-4">{error}</p>}
+          <Toaster position="top-center" />
+
+          {/* In-page drawer/panel for create/edit */}
+          <ProjectDrawer
+            open={projectManager.open}
+            editing={projectManager.editing}
+            form={form}
+            loading={loading}
+            error={error}
+            onClose={closePanel}
+            onFormChange={(e) =>
+              setForm((f) => ({ ...f, [e.target.name]: e.target.value }))
+            }
+            onFlashcardChange={(idx, field, value) => {
+              setForm((f) => {
+                const flashcards = [...f.flashcards];
+                flashcards[idx] = { ...flashcards[idx], [field]: value };
+                return { ...f, flashcards };
+              });
+            }}
+            onAddFlashcard={() =>
+              setForm((f) => ({
+                ...f,
+                flashcards: [...f.flashcards, { question: "", answer: "" }],
+              }))
+            }
+            onRemoveFlashcard={(idx) =>
+              setForm((f) => ({
+                ...f,
+                flashcards: f.flashcards.filter((_, i) => i !== idx),
+              }))
+            }
+            onSubmit={handleFormSubmit}
+          />
+        </main>
+      </div>
     </div>
   );
 }

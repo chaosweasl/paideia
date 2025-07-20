@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import { Layers, Plus } from "lucide-react";
 
@@ -7,7 +8,7 @@ interface SidebarNavProps {
 }
 
 export const SidebarNav: React.FC<SidebarNavProps> = ({ activeTab, onTab }) => (
-  <aside className="w-64 bg-base-200 border-r border-base-300 flex flex-col p-4 gap-2">
+  <nav className="flex flex-col p-4 gap-2 h-full">
     <button
       className={`btn btn-ghost justify-start ${
         activeTab === "all" ? "bg-base-300" : ""
@@ -25,5 +26,5 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({ activeTab, onTab }) => (
       <Plus className="w-4 h-4 mr-2" /> Create New
     </button>
     {/* Future: <button className="btn btn-ghost justify-start">Archived</button> */}
-  </aside>
+  </nav>
 );

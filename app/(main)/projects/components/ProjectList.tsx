@@ -1,5 +1,4 @@
 import { ProjectCard } from "./ProjectCard";
-import { motion, AnimatePresence } from "framer-motion";
 
 type Flashcard = {
   question: string;
@@ -16,20 +15,17 @@ interface ProjectListProps {
 
 export function ProjectList({
   projects,
-  openEditPanel,
   handleDelete,
-}: ProjectListProps) {
+}: Omit<ProjectListProps, "openEditPanel">) {
   return (
-    <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <>
       {projects.map((project) => (
-        <li key={project.id} className="relative">
-          <ProjectCard
-            project={project}
-            onEdit={openEditPanel}
-            onDelete={handleDelete}
-          />
-        </li>
+        <ProjectCard
+          key={project.id}
+          project={project}
+          onDelete={handleDelete}
+        />
       ))}
-    </ul>
+    </>
   );
 }
