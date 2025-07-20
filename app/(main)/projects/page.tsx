@@ -36,6 +36,7 @@ export default function ProjectsPage() {
     deleteProjectById,
     fetchProjects,
     setError,
+    undoDelete,
   } = useProjects();
   const projectManager = useProjectManager();
   // Fetch projects on mount
@@ -116,9 +117,26 @@ export default function ProjectsPage() {
     await fetchProjects();
   };
 
-  // Delete logic
+  // Delete logic with undo toast
   const handleDelete = (id: string) => {
     deleteProjectById(id);
+    toast(
+      (t) => (
+        <span>
+          Project deleted.
+          <button
+            className="ml-2 underline text-primary"
+            onClick={() => {
+              undoDelete();
+              toast.dismiss(t.id);
+            }}
+          >
+            Undo
+          </button>
+        </span>
+      ),
+      { duration: 5000 }
+    );
   };
 
   return (
