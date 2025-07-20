@@ -6,37 +6,22 @@ type Flashcard = {
   answer: string;
 };
 
-type Project = {
-  id: string;
-  name: string;
-  description: string;
-  created_at: string;
-  flashcards?: Flashcard[];
-  formattedCreatedAt?: string;
-};
+import type { Project } from "../utils/normalizeProject";
 
 interface ProjectCardProps {
   project: Project;
   onEdit: (project: Project) => void;
   onDelete: (id: string) => void;
-  onPreview: (id: string) => void;
-  isPreviewing: boolean;
-  deleteLoading: boolean;
 }
 
 export const ProjectCard: React.FC<ProjectCardProps> = ({
   project,
   onEdit,
   onDelete,
-  onPreview,
-  isPreviewing,
-  deleteLoading,
 }) => {
   return (
     <div
-      className={`bg-base-200 rounded-xl shadow p-5 flex flex-col gap-3 border border-base-300 relative h-full min-h-[180px] transition-transform duration-150 hover:scale-[1.025] ${
-        isPreviewing ? "ring-2 ring-primary" : ""
-      }`}
+      className="bg-base-200 rounded-xl shadow p-5 flex flex-col gap-3 border border-base-300 relative h-full min-h-[180px] transition-transform duration-150 hover:scale-[1.025]"
       style={{
         minHeight: "180px",
         display: "flex",
@@ -83,17 +68,8 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
         <button
           className="btn btn-xs btn-error flex items-center gap-1"
           onClick={() => onDelete(project.id)}
-          disabled={deleteLoading}
         >
           <Trash2 className="w-3 h-3" /> Delete
-        </button>
-        <button
-          className="btn btn-xs btn-primary flex items-center gap-1 ml-auto"
-          onClick={() => onPreview(project.id)}
-          aria-pressed={isPreviewing}
-          tabIndex={0}
-        >
-          Study
         </button>
       </div>
     </div>
