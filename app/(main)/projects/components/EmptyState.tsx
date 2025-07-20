@@ -19,7 +19,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({ onNewProject }) => (
       track your progress with beautiful, interactive cards.
     </div>
     <button
-      className="btn btn-primary btn-lg px-10 font-semibold shadow-lg hover:scale-105 transition-transform"
+      className="btn btn-primary btn-md px-10 font-semibold shadow-lg hover:scale-105 transition-transform"
       onClick={onNewProject}
     >
       <span className="mr-2 text-2xl">+</span> New Project

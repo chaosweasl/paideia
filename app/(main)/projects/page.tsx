@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { Flashcard } from "./utils/useProjectForm";
 import { useProjects } from "./hooks/useProjects";
 import { useProjectManager } from "./hooks/useProjectManager";
@@ -13,12 +13,16 @@ import toast, { Toaster } from "react-hot-toast";
 import { ProjectDrawer } from "./components/ProjectDrawer";
 import { SidebarNav } from "./components/SidebarNav";
 import { EmptyState } from "./components/EmptyState";
+import { useRouter } from "next/navigation";
+import { createProject } from "./actions";
 
 // --- Types ---
 // Project type now imported from normalizeProject
 // Tabs constant for tab names
 
 export default function ProjectsPage() {
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
   const {
     projects,
     loading,
@@ -56,14 +60,20 @@ export default function ProjectsPage() {
       if (!confirmLeave) return;
     }
     if (tab === Tabs.CREATE) {
-      setForm({ name: "", description: "", flashcards: [] });
-      setOriginalForm({ name: "", description: "", flashcards: [] });
-      projectManager.openCreate();
+      handleNewProject();
     } else {
       setForm({ name: "", description: "", flashcards: [] });
       setOriginalForm(null);
       projectManager.close();
     }
+  };
+
+  // Create and redirect to new project
+  const handleNewProject = () => {
+    startTransition(async () => {
+      const id = await createProject({ name: "Untitled Project", description: "", flashcards: [] });
+      if (id) router.push(`/projects/${id}/edit`);
+    });
   };
 
   // Close panel logic
@@ -125,7 +135,7 @@ export default function ProjectsPage() {
           </div>
         ) : projects.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full min-h-[60vh]">
-            <EmptyState onNewProject={() => handleTab("create")} />
+            <EmptyState onNewProject={handleNewProject} />
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
