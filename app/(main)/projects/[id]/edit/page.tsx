@@ -18,4 +18,5 @@ export default async function ProjectEditPage(props: {
     </main>
   );
 }
+
 // If you want to keep it sync, you must fetch data in a parent or via props.
