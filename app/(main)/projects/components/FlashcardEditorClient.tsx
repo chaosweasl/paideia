@@ -36,12 +36,6 @@ export function FlashcardEditorClient({ project }: FlashcardEditorClientProps) {
           onChange={(e) => setName(e.target.value)}
           placeholder="Project Name"
         />
-        <button
-          className="btn btn-accent btn-outline"
-          onClick={() => router.push(`/projects/${project.id}`)}
-        >
-          View Project
-        </button>
       </div>
       <textarea
         className="textarea textarea-bordered w-full text-base min-h-[60px] bg-base-100 border-base-300 shadow-sm rounded-xl px-4 py-3"
