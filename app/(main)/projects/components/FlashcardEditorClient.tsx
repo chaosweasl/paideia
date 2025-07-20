@@ -28,28 +28,28 @@ export function FlashcardEditorClient({ project }: FlashcardEditorClientProps) {
   }
 
   return (
-    <div className="w-full min-h-screen flex flex-col bg-gradient-to-br from-base-100 to-base-200 p-0 m-0">
-      <div className="w-full px-0 py-8 flex flex-col md:flex-row md:items-center gap-6 border-b border-base-300 bg-base-100/80 sticky top-0 z-10">
+    <div className="w-full flex flex-col gap-6">
+      <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-8 mb-2">
         <input
-          className="input input-lg input-bordered font-bold text-3xl flex-1 bg-transparent border-none shadow-none focus:ring-0 focus:outline-none px-8"
+          className="input input-bordered font-bold text-2xl md:text-3xl flex-1 bg-base-100 focus:ring-2 focus:ring-primary/30 px-4 md:px-8"
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="Project Name"
         />
         <button
-          className="btn btn-accent btn-outline mr-8"
+          className="btn btn-accent btn-outline"
           onClick={() => router.push(`/projects/${project.id}`)}
         >
           View Project
         </button>
       </div>
-      <div className="w-full flex flex-col flex-1 px-0 md:px-24 py-8 gap-8">
-        <textarea
-          className="textarea textarea-bordered w-full text-lg min-h-[80px] bg-base-100/80 border-base-300 shadow-sm rounded-xl px-6 py-4"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          placeholder="Project Description"
-        />
+      <textarea
+        className="textarea textarea-bordered w-full text-base min-h-[60px] bg-base-100 border-base-300 shadow-sm rounded-xl px-4 py-3"
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
+        placeholder="Project Description"
+      />
+      <div className="mt-2">
         <FlashcardEditor
           project={{ ...project, name, description }}
           onSave={handleSave}
