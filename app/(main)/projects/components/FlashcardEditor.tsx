@@ -24,7 +24,7 @@ export function FlashcardEditor({ project }: FlashcardEditorProps) {
     const valid =
       flashcards.length > 0 &&
       flashcards.every((fc) => fc.question.trim() && fc.answer.trim());
-    setIsValid(valid && name.trim());
+    setIsValid(valid && !!name.trim());
   }, [flashcards, name]);
 
   function handleChange(field: keyof Flashcard, value: string) {
