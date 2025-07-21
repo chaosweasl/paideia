@@ -77,9 +77,9 @@ export function FlashcardEditor({ project }: FlashcardEditorProps) {
 
   return (
     <div className="min-h-screen bg-base-200">
-      <div className="container mx-auto px-4 py-6 max-w-6xl">
+      <div className="container mx-auto px-4 py-6">
         {/* Header */}
-        <div className="mb-6">
+        <div className="mb-6 flex flex-col">
           <h1 className="text-2xl md:text-3xl font-bold mb-1">
             Edit Flashcard Set
           </h1>
