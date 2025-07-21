@@ -1,6 +1,6 @@
 // components/FlashcardEditor.tsx
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { updateProject } from "../actions";
 import { Project, Flashcard } from "../utils/normalizeProject";
@@ -15,33 +15,47 @@ export function FlashcardEditor({ project }: FlashcardEditorProps) {
   const [flashcards, setFlashcards] = useState<Flashcard[]>(
     project.flashcards || []
   );
+  const [current, setCurrent] = useState(0);
   const [saving, setSaving] = useState(false);
+  const [isValid, setIsValid] = useState(false);
   const router = useRouter();
 
-  function handleChange(idx: number, field: keyof Flashcard, value: string) {
+  useEffect(() => {
+    const valid =
+      flashcards.length > 0 &&
+      flashcards.every((fc) => fc.question.trim() && fc.answer.trim());
+    setIsValid(valid && name.trim());
+  }, [flashcards, name]);
+
+  function handleChange(field: keyof Flashcard, value: string) {
     setFlashcards((prev) => {
-      const next = [...prev];
-      next[idx] = { ...next[idx], [field]: value };
-      return next;
+      const up = [...prev];
+      up[current] = { ...up[current], [field]: value };
+      return up;
     });
   }
 
   function handleAdd() {
     setFlashcards((prev) => [...prev, { question: "", answer: "" }]);
+    setCurrent(flashcards.length);
   }
 
-  function handleRemove(idx: number) {
-    setFlashcards((prev) => prev.filter((_, i) => i !== idx));
+  function handleDelete() {
+    if (flashcards.length <= 1) return;
+    setFlashcards((prev) => {
+      const updated = [...prev.slice(0, current), ...prev.slice(current + 1)];
+      return updated;
+    });
+    setCurrent((prev) => Math.max(0, prev - 1));
+  }
+
+  function navigate(dir: number) {
+    setCurrent((p) => Math.max(0, Math.min(p + dir, flashcards.length - 1)));
   }
 
   async function handleSave() {
     setSaving(true);
-    await updateProject({
-      id: project.id,
-      name,
-      description,
-      flashcards,
-    });
+    await updateProject({ id: project.id, name, description, flashcards });
     setSaving(false);
     router.push("/projects");
   }
@@ -50,86 +64,108 @@ export function FlashcardEditor({ project }: FlashcardEditorProps) {
     router.push("/projects");
   }
 
+  const card = flashcards[current] || { question: "", answer: "" };
+
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 w-full max-w-4xl mx-auto px-4 sm:px-0">
       {/* Project Info */}
-      <section className="space-y-4">
-        <label className="block text-lg font-medium">Project Name</label>
+      <section className="space-y-2">
+        <label className="block text-base font-semibold">Project Name</label>
         <input
-          className="w-full bg-base-100 rounded-2xl shadow-sm border border-base-300 px-5 py-3 font-bold text-xl md:text-3xl focus:ring-2 focus:ring-primary/40"
+          className="input input-accent w-full rounded-lg text-lg"
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="Project Name"
         />
-
-        <label className="block text-lg font-medium">Description</label>
+        <label className="block text-base font-semibold">Description</label>
         <textarea
-          className="w-full bg-base-100 rounded-2xl shadow-sm border border-base-300 px-5 py-4 min-h-[80px] text-sm md:text-base placeholder:text-base-content/50"
+          className="textarea textarea-accent w-full rounded-lg text-sm h-20"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           placeholder="Project Description"
         />
       </section>
 
-      {/* Flashcards Section */}
-      <section className="space-y-6 md:space-y-8">
-        <div className="flex justify-between items-center">
-          <h2 className="text-xl md:text-2xl font-semibold">Flashcards</h2>
+      {/* Card-like Editor */}
+      <section className="card bg-base-100 shadow-xl rounded-lg">
+        <div className="card-body flex flex-col space-y-4">
+          <div>
+            <label className="block text-sm font-medium">Question</label>
+            <input
+              className="input input-bordered input-accent w-full"
+              value={card.question}
+              onChange={(e) => handleChange("question", e.target.value)}
+              placeholder="Enter question"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium">Answer</label>
+            <input
+              className="input input-bordered input-accent w-full"
+              value={card.answer}
+              onChange={(e) => handleChange("answer", e.target.value)}
+              placeholder="Enter answer"
+            />
+          </div>
+
+          {/* Navigation */}
+          <div className="flex items-center justify-between">
+            <div className="join">
+              <button
+                className="btn btn-outline join-item btn-sm"
+                onClick={() => navigate(-1)}
+                disabled={current === 0}
+              >
+                Prev
+              </button>
+              <button
+                className="btn btn-outline join-item btn-sm"
+                onClick={() => navigate(1)}
+                disabled={current === flashcards.length - 1}
+              >
+                Next
+              </button>
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                className="btn btn-error btn-sm"
+                onClick={handleDelete}
+                disabled={flashcards.length <= 1}
+              >
+                Delete
+              </button>
+              <span className="text-sm text-base-content/70">
+                {current + 1} / {flashcards.length}
+              </span>
+            </div>
+          </div>
+
           <button
-            className="btn btn-primary rounded-full px-4 py-1 md:px-5 md:py-2 shadow-sm text-sm md:text-base"
+            className="btn btn-accent btn-sm self-end"
             onClick={handleAdd}
           >
-            + Add Flashcard
-          </button>
-        </div>
-
-        <ul className="space-y-4 md:grid md:grid-cols-2 md:gap-4">
-          {flashcards.map((fc, idx) => (
-            <li
-              key={idx}
-              className="relative bg-base-100 rounded-xl shadow-sm border border-base-300 p-4 md:p-3 w-full"
-            >
-              <span className="inline-block text-xs font-medium text-base-content/70 mb-2">
-                #{idx + 1}
-              </span>
-
-              <div className="flex flex-col md:flex-row md:space-x-3 space-y-2 md:space-y-0">
-                <input
-                  className="flex-1 bg-base-200/80 rounded-lg px-3 py-2 text-sm placeholder:text-base-content/50 focus:ring-1 focus:ring-primary/30"
-                  value={fc.question}
-                  placeholder="Question"
-                  onChange={(e) =>
-                    handleChange(idx, "question", e.target.value)
-                  }
-                />
-                <input
-                  className="flex-1 bg-base-300/80 rounded-lg px-3 py-2 text-sm placeholder:text-base-content/50 focus:ring-1 focus:ring-primary/30"
-                  value={fc.answer}
-                  placeholder="Answer"
-                  onChange={(e) => handleChange(idx, "answer", e.target.value)}
-                />
-              </div>
-            </li>
-          ))}
-        </ul>
-
-        <div className="border-t border-base-300 pt-6 flex justify-end gap-4">
-          <button
-            className="btn btn-ghost btn-sm text-base-content/70"
-            onClick={handleCancel}
-            disabled={saving}
-          >
-            Cancel
-          </button>
-          <button
-            className="btn btn-success btn-md shadow-lg rounded-full px-6 py-2 text-base"
-            onClick={handleSave}
-            disabled={saving}
-          >
-            {saving ? "Saving..." : "Save Project"}
+            + New Card
           </button>
         </div>
       </section>
+
+      {/* Actions */}
+      <div className="flex justify-end space-x-2">
+        <button
+          className="btn btn-ghost btn-sm"
+          onClick={handleCancel}
+          disabled={saving}
+        >
+          Cancel
+        </button>
+        <button
+          className="btn btn-success btn-md"
+          onClick={handleSave}
+          disabled={!isValid || saving}
+        >
+          {saving ? "Saving..." : "Save Project"}
+        </button>
+      </div>
     </div>
   );
 }
