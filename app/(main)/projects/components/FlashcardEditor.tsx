@@ -159,38 +159,26 @@ export function FlashcardEditor({ project }: FlashcardEditorProps) {
                     <label className="label py-1">
                       <span className="label-text font-medium">Question</span>
                     </label>
-                    <div className="card bg-base-200 border border-base-300">
-                      <div className="card-body p-4">
-                        <textarea
-                          className="textarea textarea-ghost w-full h-20 resize-none p-0 text-base leading-relaxed focus:outline-none"
-                          value={card.question}
-                          onChange={(e) =>
-                            handleChange("question", e.target.value)
-                          }
-                          placeholder="Enter your question here..."
-                          disabled={saving}
-                        />
-                      </div>
-                    </div>
+                    <textarea
+                      className="textarea textarea-bordered w-full h-24 resize-none"
+                      value={card.question}
+                      onChange={(e) => handleChange("question", e.target.value)}
+                      placeholder="Enter your question here..."
+                      disabled={saving}
+                    />
                   </div>
 
                   <div>
                     <label className="label py-1">
                       <span className="label-text font-medium">Answer</span>
                     </label>
-                    <div className="card bg-success/10 border border-success/30">
-                      <div className="card-body p-4">
-                        <textarea
-                          className="textarea textarea-ghost w-full h-20 resize-none p-0 text-base leading-relaxed focus:outline-none"
-                          value={card.answer}
-                          onChange={(e) =>
-                            handleChange("answer", e.target.value)
-                          }
-                          placeholder="Enter your answer here..."
-                          disabled={saving}
-                        />
-                      </div>
-                    </div>
+                    <textarea
+                      className="textarea textarea-bordered w-full h-24 resize-none"
+                      value={card.answer}
+                      onChange={(e) => handleChange("answer", e.target.value)}
+                      placeholder="Enter your answer here..."
+                      disabled={saving}
+                    />
                   </div>
                 </div>
 
