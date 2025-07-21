@@ -1,5 +1,5 @@
-// components/FlashcardEditor.tsx
 "use client";
+
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { updateProject } from "../actions";
@@ -67,19 +67,24 @@ export function FlashcardEditor({ project }: FlashcardEditorProps) {
   const card = flashcards[current] || { question: "", answer: "" };
 
   return (
-    <div className="space-y-8 w-full max-w-4xl mx-auto px-4 sm:px-0">
+    <div className="max-w-4xl mx-auto px-6 sm:px-8 lg:px-12 py-8">
       {/* Project Info */}
-      <section className="space-y-2">
-        <label className="block text-base font-semibold">Project Name</label>
+      <section className="mb-10 last:mb-0">
+        <label className="block font-semibold mb-1 text-base">
+          Project Name
+        </label>
         <input
-          className="input input-accent w-full rounded-lg text-lg"
+          className="input input-accent w-full mb-6 rounded-lg text-lg"
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="Project Name"
         />
-        <label className="block text-base font-semibold">Description</label>
+
+        <label className="block font-semibold mb-1 text-base">
+          Description
+        </label>
         <textarea
-          className="textarea textarea-accent w-full rounded-lg text-sm h-20"
+          className="textarea textarea-accent w-full mb-6 rounded-lg text-sm h-20"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           placeholder="Project Description"
@@ -87,29 +92,30 @@ export function FlashcardEditor({ project }: FlashcardEditorProps) {
       </section>
 
       {/* Card-like Editor */}
-      <section className="card bg-base-100 shadow-xl rounded-lg">
-        <div className="card-body flex flex-col space-y-4">
+      <section className="card bg-base-100 shadow-xl rounded-lg p-6 mb-10 last:mb-0">
+        <div className="flex flex-col space-y-6">
           <div>
-            <label className="block text-sm font-medium">Question</label>
+            <label className="block font-medium mb-1 text-sm">Question</label>
             <input
-              className="input input-bordered input-accent w-full"
+              className="input input-bordered input-accent w-full rounded"
               value={card.question}
               onChange={(e) => handleChange("question", e.target.value)}
               placeholder="Enter question"
             />
           </div>
+
           <div>
-            <label className="block text-sm font-medium">Answer</label>
+            <label className="block font-medium mb-1 text-sm">Answer</label>
             <input
-              className="input input-bordered input-accent w-full"
+              className="input input-bordered input-accent w-full rounded"
               value={card.answer}
               onChange={(e) => handleChange("answer", e.target.value)}
               placeholder="Enter answer"
             />
           </div>
 
-          {/* Navigation */}
-          <div className="flex items-center justify-between">
+          {/* Navigation and actions */}
+          <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="join">
               <button
                 className="btn btn-outline join-item btn-sm"
@@ -126,7 +132,8 @@ export function FlashcardEditor({ project }: FlashcardEditorProps) {
                 Next
               </button>
             </div>
-            <div className="flex items-center gap-2">
+
+            <div className="flex items-center gap-4">
               <button
                 className="btn btn-error btn-sm"
                 onClick={handleDelete}
@@ -138,19 +145,19 @@ export function FlashcardEditor({ project }: FlashcardEditorProps) {
                 {current + 1} / {flashcards.length}
               </span>
             </div>
-          </div>
 
-          <button
-            className="btn btn-accent btn-sm self-end"
-            onClick={handleAdd}
-          >
-            + New Card
-          </button>
+            <button
+              className="btn btn-accent btn-sm whitespace-nowrap"
+              onClick={handleAdd}
+            >
+              + New Card
+            </button>
+          </div>
         </div>
       </section>
 
       {/* Actions */}
-      <div className="flex justify-end space-x-2">
+      <div className="flex flex-wrap gap-4 justify-end">
         <button
           className="btn btn-ghost btn-sm"
           onClick={handleCancel}
