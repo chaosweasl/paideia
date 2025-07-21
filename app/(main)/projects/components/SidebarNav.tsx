@@ -15,8 +15,8 @@ export const SidebarNav: React.FC<SidebarNavProps & { mobile?: boolean }> = ({
   <nav
     className={
       mobile
-        ? "flex flex-row w-full justify-around border-t-2 border-base-300 bg-base-100 py-2"
-        : "flex flex-col p-6 gap-2 h-full border-r-2 border-base-300 bg-base-100"
+        ? "flex flex-row w-full justify-around border-t border-base-300 shadow-sm bg-base-100 py-2"
+        : "flex flex-col p-6 gap-2 h-full border-r border-base-300 bg-base-100 shadow-sm"
     }
   >
     <button
