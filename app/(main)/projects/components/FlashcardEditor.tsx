@@ -42,27 +42,25 @@ export function FlashcardEditor({ project, onSave }: FlashcardEditorProps) {
   }
 
   return (
-    <div className="flex flex-col gap-8 w-full">
-      <div className="flex flex-col gap-4 w-full">
-        <h2 className="font-semibold text-xl mb-2 px-2">Flashcards</h2>
-        <ul className="space-y-4 w-full">
-          {flashcards.map((fc, idx) => (
-            <li
-              key={idx}
-              className="flex flex-col md:flex-row gap-2 items-center bg-base-200 rounded-xl p-4 shadow-sm w-full"
-            >
-              <input
-                className="input input-bordered flex-1 text-base bg-base-100/80"
-                value={fc.question}
-                placeholder="Question"
-                onChange={(e) => handleChange(idx, "question", e.target.value)}
-              />
-              <input
-                className="input input-bordered flex-1 text-base bg-base-100/80"
-                value={fc.answer}
-                placeholder="Answer"
-                onChange={(e) => handleChange(idx, "answer", e.target.value)}
-              />
+    <div className="space-y-8">
+      <div className="flex justify-between items-center">
+        <h2 className="text-2xl font-semibold">Flashcards</h2>
+        <button
+          className="btn btn-primary rounded-full px-4 py-2 shadow-sm"
+          onClick={handleAdd}
+        >
+          + Add Flashcard
+        </button>
+      </div>
+
+      <ul className="space-y-6">
+        {flashcards.map((fc, idx) => (
+          <li
+            key={idx}
+            className="relative bg-base-100 rounded-2xl shadow-md border border-base-300 p-6 space-y-4"
+          >
+            <div className="flex justify-between items-center mb-2">
+              <span className="font-medium text-lg">Flashcard #{idx + 1}</span>
               <button
                 className="btn btn-xs btn-error"
                 onClick={() => handleRemove(idx)}
@@ -70,25 +68,33 @@ export function FlashcardEditor({ project, onSave }: FlashcardEditorProps) {
               >
                 ✕
               </button>
-            </li>
-          ))}
-        </ul>
-        <div className="flex justify-end w-full">
-          <button className="btn btn-primary btn-outline" onClick={handleAdd}>
-            + Add Flashcard
-          </button>
-        </div>
-      </div>
-      <div className="flex justify-end gap-4 mt-8 w-full">
+            </div>
+            <input
+              className="w-full bg-base-200/80 rounded-xl px-4 py-3 border border-base-300 focus:ring-1 focus:ring-primary/30"
+              value={fc.question}
+              placeholder="Question"
+              onChange={(e) => handleChange(idx, "question", e.target.value)}
+            />
+            <input
+              className="w-full bg-base-200/80 rounded-xl px-4 py-3 border border-base-300 focus:ring-1 focus:ring-primary/30"
+              value={fc.answer}
+              placeholder="Answer"
+              onChange={(e) => handleChange(idx, "answer", e.target.value)}
+            />
+          </li>
+        ))}
+      </ul>
+
+      <div className="border-t border-base-300 pt-6 flex justify-end gap-4">
         <button
-          className="btn btn-ghost"
+          className="btn btn-ghost btn-sm text-base-content/70"
           onClick={handleCancel}
           disabled={saving}
         >
           Cancel
         </button>
         <button
-          className="btn btn-success btn-md shadow-md"
+          className="btn btn-success btn-md shadow-lg rounded-full px-6 py-2"
           onClick={handleSave}
           disabled={saving}
         >
