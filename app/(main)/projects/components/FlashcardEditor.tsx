@@ -77,7 +77,7 @@ export function FlashcardEditor({ project }: FlashcardEditorProps) {
 
   return (
     <div className="min-h-screen bg-base-200">
-      <div className="container mx-auto px-4 py-6">
+      <div className="container mx-auto pb-12 md:pb-0">
         {/* Header */}
         <div className="mb-6 flex flex-col">
           <h1 className="text-2xl md:text-3xl font-bold mb-1">
@@ -230,7 +230,7 @@ export function FlashcardEditor({ project }: FlashcardEditorProps) {
         </div>
 
         {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row sm:justify-between gap-3 mt-6">
+        <div className="flex flex-row justify-between gap-3 mt-6">
           <button
             className="btn btn-ghost"
             onClick={handleCancel}
