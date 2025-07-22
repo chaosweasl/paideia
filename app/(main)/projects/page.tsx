@@ -3,6 +3,7 @@
 import { useEffect, useState, useTransition } from "react";
 import { Flashcard } from "./utils/useProjectForm";
 import { useProjects } from "./hooks/useProjects";
+import { useProjectsStore } from "./store/projectsStore";
 import { useProjectManager } from "./hooks/useProjectManager";
 import { useUnsavedChangesWarning } from "./hooks/useUnsavedChangesWarning";
 import { deepEqual } from "./utils/deepEqual";
@@ -30,12 +31,11 @@ export default function ProjectsPage() {
     updateProjectById,
     deleteProjectById,
     fetchProjects,
-    undoDelete,
-  } = useProjects();
+  } = useProjectsStore();
   const projectManager = useProjectManager();
   useEffect(() => {
     fetchProjects();
-  }, [fetchProjects]);
+  }, []);
   const [originalForm, setOriginalForm] = useState<{
     name: string;
     description: string;
@@ -102,29 +102,13 @@ export default function ProjectsPage() {
     }
     setOriginalForm(null);
     closePanel({ force: true });
-    await fetchProjects();
+    // fetchProjects is already called in store after mutation
   };
 
   // Delete logic with undo toast
   const handleDelete = (id: string) => {
     deleteProjectById(id);
-    toast(
-      (t) => (
-        <span>
-          Project deleted.
-          <button
-            className="ml-2 underline text-primary"
-            onClick={() => {
-              undoDelete();
-              toast.dismiss(t.id);
-            }}
-          >
-            Undo
-          </button>
-        </span>
-      ),
-      { duration: 5000 }
-    );
+    toast("Project deleted.", { duration: 5000 });
   };
 
   // --- Layout ---

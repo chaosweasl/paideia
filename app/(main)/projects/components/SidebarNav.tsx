@@ -2,6 +2,7 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 import { useProjects } from "../hooks/useProjects";
+import { useProjectsStore } from "../store/projectsStore";
 import { Layers, Plus } from "lucide-react";
 
 interface SidebarNavProps {
@@ -10,7 +11,7 @@ interface SidebarNavProps {
 }
 
 export const SidebarNav: React.FC<SidebarNavProps> = ({ activeTab, onTab }) => {
-  const { projects, loading, error } = useProjects();
+  const { projects, loading, error } = useProjectsStore();
   const router = useRouter();
   // Helper to truncate project name
   const truncateTitle = (title: string, max: number = 18) =>
