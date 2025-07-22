@@ -6,7 +6,6 @@ import { useProjectsStore } from "./store/projectsStore";
 import { useProjectManager } from "./hooks/useProjectManager";
 import { useUnsavedChangesWarning } from "./hooks/useUnsavedChangesWarning";
 import { deepEqual } from "./utils/deepEqual";
-import { Tabs } from "./utils/tabs";
 import { Loader2 } from "lucide-react";
 import { ProjectList } from "./components/ProjectList";
 import toast, { Toaster } from "react-hot-toast";
@@ -21,15 +20,8 @@ import { createProject } from "./actions";
 export default function ProjectsPage() {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
-  const {
-    projects,
-    loading,
-    error,
-    addProject,
-    updateProjectById,
-    deleteProjectById,
-    fetchProjects,
-  } = useProjectsStore();
+  const { projects, loading, error, deleteProjectById, fetchProjects } =
+    useProjectsStore();
   const projectManager = useProjectManager();
   useEffect(() => {
     fetchProjects();
