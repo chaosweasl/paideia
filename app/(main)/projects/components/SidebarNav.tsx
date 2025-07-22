@@ -1,7 +1,6 @@
 "use client";
 import React from "react";
 import { useRouter } from "next/navigation";
-import { useProjects } from "../hooks/useProjects";
 import { useProjectsStore } from "../store/projectsStore";
 import { Layers, Plus } from "lucide-react";
 

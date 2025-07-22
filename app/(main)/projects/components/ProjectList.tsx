@@ -1,10 +1,5 @@
 import { ProjectCard } from "./ProjectCard";
 
-type Flashcard = {
-  question: string;
-  answer: string;
-};
-
 import type { Project } from "../utils/normalizeProject";
 
 interface ProjectListProps {

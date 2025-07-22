@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Project } from "../utils/normalizeProject";
 
 export type ProjectManagerState = {
   open: boolean;

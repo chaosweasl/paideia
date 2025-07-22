@@ -1,11 +1,7 @@
 import { BookOpen } from "lucide-react";
 import React from "react";
 
-interface EmptyStateProps {
-  onNewProject: () => void;
-}
-
-export const EmptyState: React.FC<EmptyStateProps> = ({ onNewProject }) => (
+export const EmptyState: React.FC = () => (
   <div className="flex flex-col items-center justify-center flex-1 h-full text-center text-base-content/80 py-24">
     <BookOpen
       size={90}
@@ -18,11 +14,5 @@ export const EmptyState: React.FC<EmptyStateProps> = ({ onNewProject }) => (
       Start by creating your first flashcard project. Organize your learning and
       track your progress with beautiful, interactive cards.
     </div>
-    <button
-      className="btn btn-primary btn-md px-10 font-semibold shadow-lg hover:scale-105 transition-transform"
-      onClick={onNewProject}
-    >
-      <span className="mr-2 text-2xl">+</span> New Project
-    </button>
   </div>
 );
