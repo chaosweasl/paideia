@@ -3,20 +3,14 @@
 import { useEffect } from "react";
 import { useProjectsStore } from "./hooks/useProjects";
 import { ProjectList } from "./components/ProjectList";
-import toast, { Toaster } from "react-hot-toast";
 import { EmptyState } from "./components/EmptyState";
 import { Loader2 } from "lucide-react";
 
 export default function ProjectsPage() {
-  const { projects, loading, error, deleteProjectById, fetchProjects } =
-    useProjectsStore();
+  const { projects, loading, error, fetchProjects } = useProjectsStore();
   useEffect(() => {
     fetchProjects();
   }, []);
-  const handleDelete = (id: string) => {
-    deleteProjectById(id);
-    toast("Project deleted.", { duration: 5000 });
-  };
 
   // --- Layout ---
   return (
@@ -41,7 +35,6 @@ export default function ProjectsPage() {
             {error}
           </p>
         )}
-        <Toaster position="top-center" />
       </main>
     </>
   );

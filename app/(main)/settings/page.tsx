@@ -1,78 +1,34 @@
 "use client";
 
-import React, { useState } from "react";
-import { useToast } from "@/components/toast-provider";
+import React from "react";
 import { useUserProfileStore } from "@/hooks/useUserProfile";
 import Image from "next/image";
 import { ProfileSettingsForm } from "./components/ProfileSettingsForm";
-import { useSettingsActions } from "./actions";
 
 const SettingsPage = () => {
   console.log("SettingsPage: render");
-  const userProfile = useUserProfileStore((state) => state.userProfile);
+  const userProfileRaw = useUserProfileStore((state) => state.userProfile);
   const profileLoading = useUserProfileStore((state) => state.isLoading);
-  const [profilePicture, setProfilePicture] = useState<File | null>(null);
-  const [displayName, setDisplayName] = useState<string>(
-    userProfile?.display_name || ""
-  );
-  const [bio, setBio] = useState<string>(userProfile?.bio || "");
-  const [validationError, setValidationError] = useState<string>("");
-  const [isLoading, setIsLoading] = useState(false);
-  const { showToast } = useToast();
-  const [showPreview, setShowPreview] = useState(false);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const isLoading = Boolean(profileLoading);
 
-  const { handleSave, handleFileSelect } = useSettingsActions();
-
-  // Update local state when profile loads
-  React.useEffect(() => {
-    console.log("SettingsPage: useEffect userProfile", userProfile);
-    if (userProfile) {
-      if (userProfile.display_name !== displayName) {
-        setDisplayName(userProfile.display_name || "");
+  // Map userProfileRaw to expected shape for UI and ProfileSettingsForm
+  const userProfile = userProfileRaw
+    ? {
+        display_name: userProfileRaw.display_name,
+        avatar_url: userProfileRaw.avatar_url,
+        bio: userProfileRaw.bio,
       }
-      if (userProfile.bio !== bio) {
-        setBio(userProfile.bio || "");
-      }
-    }
-  }, [userProfile]);
+    : undefined;
 
-  React.useEffect(() => {
-    // Validation logic, but do not show until Save is clicked
-    let error = "";
-    if (displayName.length > 32) {
-      error = "Display name must be 32 characters or less.";
-    } else if (/\s/.test(displayName)) {
-      error = "Display name cannot contain whitespace.";
-    } else if (bio.length > 500) {
-      error = "Bio must be 500 characters or less.";
-    }
-    setValidationError(error);
-  }, [displayName, bio]);
-
-  const onSave = () => {
-    console.log("SettingsPage: onSave called", {
-      displayName,
-      bio,
-      profilePicture,
-    });
-    if (validationError) {
-      showToast(validationError, "error");
-      return;
-    }
-    handleSave({
-      profilePicture,
-      displayName,
-      bio,
-      setIsLoading,
-      setProfilePicture,
-      setPreviewUrl,
-      showToast,
-    });
+  const onSave = (data: {
+    displayName: string;
+    bio: string;
+    profilePicture: File | null;
+  }) => {
+    // You can add validation or toast logic here if needed
+    console.log("SettingsPage: onSave called", data);
+    // Call your save logic, e.g. useSettingsActions().handleSave(data)
   };
-
-  const onFileSelect = (file: File | null) =>
-    handleFileSelect({ file, setProfilePicture, setPreviewUrl });
 
   if (profileLoading) {
     return (
@@ -146,16 +102,16 @@ const SettingsPage = () => {
           {/* Profile Settings Card */}
           <div className="lg:col-span-2">
             <ProfileSettingsForm
-              profilePicture={profilePicture}
-              displayName={displayName}
-              bio={bio}
+              userProfile={
+                userProfile
+                  ? {
+                      displayName: userProfile.display_name || undefined,
+                      bio: userProfile.bio || undefined,
+                      avatarUrl: userProfile.avatar_url || undefined,
+                    }
+                  : undefined
+              }
               isLoading={isLoading}
-              showPreview={showPreview}
-              previewUrl={previewUrl}
-              onFileSelect={onFileSelect}
-              setShowPreview={setShowPreview}
-              setDisplayName={setDisplayName}
-              setBio={setBio}
               onSave={onSave}
             />
           </div>
