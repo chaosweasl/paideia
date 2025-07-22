@@ -11,7 +11,6 @@ import { Loader2 } from "lucide-react";
 import { ProjectList } from "./components/ProjectList";
 import toast, { Toaster } from "react-hot-toast";
 import { ProjectDrawer } from "./components/ProjectDrawer";
-import { SidebarNav } from "./components/SidebarNav";
 import { EmptyState } from "./components/EmptyState";
 import { useRouter } from "next/navigation";
 import { createProject } from "./actions";
