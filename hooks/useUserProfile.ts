@@ -8,6 +8,7 @@ export interface UserProfile {
   display_name: string | null;
   avatar_url: string | null;
   bio: string | null;
+  email: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -52,6 +53,7 @@ export const useUserProfileStore = create<UserProfileState>((set, get) => ({
                   user.user_metadata?.name || user.email?.split("@")[0] || "",
                 avatar_url: user.user_metadata?.avatar_url || null,
                 bio: "",
+                email: user.email || null,
               },
             ])
             .select()
@@ -61,7 +63,7 @@ export const useUserProfileStore = create<UserProfileState>((set, get) => ({
             return;
           }
           if (newProfile) {
-            set({ userProfile: newProfile });
+            set({ userProfile: { ...newProfile, email: user.email || null } });
           }
         } else {
           set({ error: "Error fetching profile" });
@@ -69,7 +71,7 @@ export const useUserProfileStore = create<UserProfileState>((set, get) => ({
         }
       }
       if (profile) {
-        set({ userProfile: profile });
+        set({ userProfile: { ...profile, email: user.email || null } });
       }
     } catch (err) {
       set({ error: "An unexpected error occurred" });
