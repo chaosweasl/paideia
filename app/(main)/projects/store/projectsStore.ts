@@ -26,7 +26,9 @@ export const useProjectsStore = create<ProjectsState>((set, get) => ({
   fetchProjects: async (): Promise<void> => {
     set({ loading: true, error: null });
     try {
-      const data: RawProject[] = await getProjects();
+      const res = await fetch("/api/projects");
+      if (!res.ok) throw new Error("Failed to fetch projects");
+      const data: RawProject[] = await res.json();
       set({
         projects: data.map((p) => ({
           id: p.id,
