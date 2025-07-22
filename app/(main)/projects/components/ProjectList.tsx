@@ -1,24 +1,16 @@
 import { ProjectCard } from "./ProjectCard";
 
-import type { Project } from "../utils/normalizeProject";
+import { useProjectsStore } from "../hooks/useProjects";
 
-interface ProjectListProps {
-  projects: Project[];
-  openEditPanel: (project: Project) => void;
-  handleDelete: (id: string) => void;
-}
-
-export function ProjectList({
-  projects,
-  handleDelete,
-}: Omit<ProjectListProps, "openEditPanel">) {
+export function ProjectList() {
+  const { projects, deleteProjectById } = useProjectsStore();
   return (
     <>
       {projects.map((project) => (
         <ProjectCard
           key={project.id}
           project={project}
-          onDelete={handleDelete}
+          onDelete={deleteProjectById}
         />
       ))}
     </>

@@ -21,18 +21,16 @@ export interface HandleFileSelectParams {
   setPreviewUrl: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
-import { useUserProfile } from "@/hooks/useUserProfile";
+import { useUserProfileStore } from "@/hooks/useUserProfile";
 
 export function useSettingsActions() {
-  console.log("useSettingsActions: hook initialized");
   const {
     userProfile,
     isLoading: profileLoading,
     updateUserProfile,
     uploadAvatar,
-  } = useUserProfile();
+  } = useUserProfileStore();
 
-  // Handles updating the user profile (display name, bio, avatar)
   const handleSave = async ({
     profilePicture,
     displayName,
@@ -42,14 +40,8 @@ export function useSettingsActions() {
     setProfilePicture,
     setPreviewUrl,
   }: HandleSaveParams) => {
-    console.log("useSettingsActions: handleSave called", {
-      profilePicture,
-      displayName,
-      bio,
-    });
     setIsLoading(true);
     if (showToast) showToast("", "info");
-    // Validation
     if (displayName.length > 32) {
       if (showToast)
         showToast("Display name must be 32 characters or less.", "error");
@@ -67,7 +59,6 @@ export function useSettingsActions() {
       setIsLoading(false);
       return;
     }
-
     try {
       let avatarUrl = userProfile?.avatar_url || "";
       if (profilePicture) {
@@ -84,13 +75,11 @@ export function useSettingsActions() {
     setIsLoading(false);
   };
 
-  // Handles file selection and preview
   const handleFileSelect = ({
     file,
     setProfilePicture,
     setPreviewUrl,
   }: HandleFileSelectParams) => {
-    console.log("useSettingsActions: handleFileSelect called", file);
     setProfilePicture(file);
     if (file && file.type.startsWith("image/")) {
       const reader = new FileReader();

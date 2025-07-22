@@ -1,141 +1,121 @@
-import React, { useState, useCallback, useRef } from "react";
-
+import { create } from "zustand";
 import {
   getProjects,
   createProject,
   updateProject,
   deleteProject,
 } from "../actions";
-
 import {
   normalizeProject,
   Project,
   RawProject,
 } from "../utils/normalizeProject";
+import { formatDate } from "../utils/formatDate";
 
-import { formatDate } from "..//utils/formatDate";
+interface ProjectsState {
+  projects: Project[];
+  loading: boolean;
+  error: string | null;
+  fetchProjects: () => Promise<void>;
+  addProject: (
+    project: Omit<Project, "id" | "created_at" | "formattedCreatedAt">
+  ) => Promise<void>;
+  updateProjectById: (id: string, updates: Partial<Project>) => Promise<void>;
+  deleteProjectById: (id: string) => void;
+  undoDelete: () => void;
+  setError: (error: string | null) => void;
+}
 
-export function useProjects() {
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const undoRef = useRef<null | (() => void)>(null);
+let undoRef: null | (() => void) = null;
 
-  const fetchProjects = useCallback(async () => {
-    setLoading(true);
-    setError(null);
+export const useProjectsStore = create<ProjectsState>((set, get) => ({
+  projects: [],
+  loading: true,
+  error: null,
+  fetchProjects: async () => {
+    set({ loading: true, error: null });
     try {
       const data: RawProject[] = await getProjects();
       const normalized = data.map((p) => ({
         ...normalizeProject(p),
         formattedCreatedAt: formatDate(p.created_at),
       }));
-      setProjects(normalized);
+      set({ projects: normalized });
     } catch {
-      setError("Failed to load projects");
+      set({ error: "Failed to load projects" });
     } finally {
-      setLoading(false);
+      set({ loading: false });
     }
-  }, []);
-
-  // Fetch projects on mount
-  React.useEffect(() => {
-    fetchProjects();
-  }, [fetchProjects]);
-
-  const addProject = useCallback(
-    async (
-      project: Omit<Project, "id" | "created_at" | "formattedCreatedAt">
-    ) => {
-      setLoading(true);
-      try {
-        const tempId = "temp-" + Date.now();
-        const optimistic: Project = {
-          id: tempId,
-          ...project,
-          created_at: new Date().toISOString(),
-          formattedCreatedAt: formatDate(new Date()),
-        };
-        setProjects((prev) => [optimistic, ...prev]);
-        await createProject(project);
-        await fetchProjects();
-      } catch {
-        setError("Failed to create project");
-      } finally {
-        setLoading(false);
-      }
-    },
-    [fetchProjects]
-  );
-
-  const updateProjectById = useCallback(
-    async (id: string, updates: Partial<Project>) => {
-      setLoading(true);
-      try {
-        setProjects((prev) =>
-          prev.map((p) => (p.id === id ? { ...p, ...updates } : p))
-        );
-        // Find the current project to fill missing required fields
-        const current = projects.find((p) => p.id === id);
-        if (!current) throw new Error("Project not found");
-        await updateProject({
-          id,
-          name: updates.name ?? current.name,
-          description: updates.description ?? current.description,
-          flashcards: updates.flashcards ?? current.flashcards,
-        });
-        await fetchProjects();
-      } catch {
-        setError("Failed to update project");
-      } finally {
-        setLoading(false);
-      }
-    },
-    [fetchProjects]
-  );
-
-  const deleteProjectById = useCallback(
-    (id: string) => {
-      const deleted = projects.find((p) => p.id === id);
-      setProjects((prev) => prev.filter((p) => p.id !== id));
-      let undo = false;
-      undoRef.current = () => {
-        undo = true;
-        setProjects((prev) => [deleted!, ...prev]);
+  },
+  addProject: async (project) => {
+    set({ loading: true });
+    try {
+      const tempId = "temp-" + Date.now();
+      const optimistic: Project = {
+        id: tempId,
+        ...project,
+        created_at: new Date().toISOString(),
+        formattedCreatedAt: formatDate(new Date()),
       };
-      setTimeout(async () => {
-        if (!undo) {
-          setLoading(true);
-          try {
-            await deleteProject(id);
-            await fetchProjects();
-          } catch {
-            setError("Failed to delete project");
-          } finally {
-            setLoading(false);
-          }
-        }
-      }, 5000);
-    },
-    [projects, fetchProjects]
-  );
-
-  const undoDelete = useCallback(() => {
-    if (undoRef.current) {
-      undoRef.current();
-      undoRef.current = null;
+      set((state) => ({ projects: [optimistic, ...state.projects] }));
+      await createProject(project);
+      await get().fetchProjects();
+    } catch {
+      set({ error: "Failed to create project" });
+    } finally {
+      set({ loading: false });
     }
-  }, []);
-
-  return {
-    projects,
-    loading,
-    error,
-    fetchProjects,
-    addProject,
-    updateProjectById,
-    deleteProjectById,
-    undoDelete,
-    setError,
-  };
-}
+  },
+  updateProjectById: async (id, updates) => {
+    set({ loading: true });
+    try {
+      set((state) => ({
+        projects: state.projects.map((p) =>
+          p.id === id ? { ...p, ...updates } : p
+        ),
+      }));
+      const current = get().projects.find((p) => p.id === id);
+      if (!current) throw new Error("Project not found");
+      await updateProject({
+        id,
+        name: updates.name ?? current.name,
+        description: updates.description ?? current.description,
+        flashcards: updates.flashcards ?? current.flashcards,
+      });
+      await get().fetchProjects();
+    } catch {
+      set({ error: "Failed to update project" });
+    } finally {
+      set({ loading: false });
+    }
+  },
+  deleteProjectById: (id) => {
+    const deleted = get().projects.find((p) => p.id === id);
+    set((state) => ({ projects: state.projects.filter((p) => p.id !== id) }));
+    let undo = false;
+    undoRef = () => {
+      undo = true;
+      set((state) => ({ projects: [deleted!, ...state.projects] }));
+    };
+    setTimeout(async () => {
+      if (!undo) {
+        set({ loading: true });
+        try {
+          await deleteProject(id);
+          await get().fetchProjects();
+        } catch {
+          set({ error: "Failed to delete project" });
+        } finally {
+          set({ loading: false });
+        }
+      }
+    }, 5000);
+  },
+  undoDelete: () => {
+    if (undoRef) {
+      undoRef();
+      undoRef = null;
+    }
+  },
+  setError: (error) => set({ error }),
+}));

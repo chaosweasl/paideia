@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { useRouter } from "next/navigation";
-import { useProjectsStore } from "../store/projectsStore";
+import { useProjectsStore } from "../hooks/useProjects";
 import { Layers, Plus } from "lucide-react";
 
 interface SidebarNavProps {

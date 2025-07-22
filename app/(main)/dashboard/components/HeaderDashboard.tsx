@@ -5,13 +5,15 @@ import { User, Settings } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useTheme } from "@/hooks/useTheme";
-import { useDashboardHeader } from "@/hooks/useDashboardHeader";
+import React from "react";
+import { useUserProfileStore } from "@/hooks/useUserProfile";
 import { useState, useEffect } from "react";
 import { signOut } from "../actions";
 
 export function Header() {
   const { theme, toggleTheme } = useTheme();
-  const { user, drawerOpen, setDrawerOpen } = useDashboardHeader();
+  const { userProfile } = useUserProfileStore();
+  const [drawerOpen, setDrawerOpen] = React.useState(false);
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
     setMounted(true);
@@ -219,7 +221,7 @@ export function Header() {
             >
               <div className="w-10 rounded-full overflow-hidden bg-base-200">
                 <Image
-                  src={user.avatar}
+                  src={userProfile?.avatar_url || "/assets/nopfp.png"}
                   alt="User avatar"
                   width={40}
                   height={40}
@@ -233,7 +235,7 @@ export function Header() {
             </div>
             <ul className="menu menu-sm dropdown-content mt-3 z-[1] p-3 shadow-lg bg-base-100 rounded-box w-64 border border-base-200">
               <li className="font-bold text-base-content/80 px-2 py-1 mb-1 border-b border-base-200 text-lg">
-                {user.name}
+                {userProfile?.display_name || "User"}
               </li>
               <li>
                 <Link

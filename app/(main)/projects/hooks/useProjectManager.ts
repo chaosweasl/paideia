@@ -1,29 +1,20 @@
-import { useState } from "react";
+import { create } from "zustand";
 
 export type ProjectManagerState = {
   open: boolean;
   editing: boolean;
   projectId?: string;
+  openCreate: () => void;
+  openEdit: (projectId: string) => void;
+  close: () => void;
 };
 
-export function useProjectManager() {
-  const [state, setState] = useState<ProjectManagerState>({
-    open: false,
-    editing: false,
-    projectId: undefined,
-  });
-
-  const openCreate = () =>
-    setState({ open: true, editing: false, projectId: undefined });
-  const openEdit = (projectId: string) =>
-    setState({ open: true, editing: true, projectId });
-  const close = () =>
-    setState({ open: false, editing: false, projectId: undefined });
-
-  return {
-    ...state,
-    openCreate,
-    openEdit,
-    close,
-  };
-}
+export const useProjectManagerStore = create<ProjectManagerState>((set) => ({
+  open: false,
+  editing: false,
+  projectId: undefined,
+  openCreate: () => set({ open: true, editing: false, projectId: undefined }),
+  openEdit: (projectId: string) =>
+    set({ open: true, editing: true, projectId }),
+  close: () => set({ open: false, editing: false, projectId: undefined }),
+}));
