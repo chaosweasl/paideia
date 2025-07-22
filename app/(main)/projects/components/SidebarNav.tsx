@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import { useRouter } from "next/navigation";
 import { useProjects } from "../hooks/useProjects";
 import { Layers, Plus } from "lucide-react";
 
@@ -10,6 +11,7 @@ interface SidebarNavProps {
 
 export const SidebarNav: React.FC<SidebarNavProps> = ({ activeTab, onTab }) => {
   const { projects, loading, error } = useProjects();
+  const router = useRouter();
   // Helper to truncate project name
   const truncateTitle = (title: string, max: number = 18) =>
     title.length > max ? title.slice(0, max) + "..." : title;
@@ -22,7 +24,10 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({ activeTab, onTab }) => {
         className={`btn btn-ghost flex items-center gap-2 text-base font-medium transition ${
           activeTab === "all" ? "bg-primary/10 text-primary" : ""
         } justify-start`}
-        onClick={() => onTab("all")}
+        onClick={() => {
+          onTab("all");
+          router.push("/projects");
+        }}
         type="button"
       >
         <Layers className="w-5 h-5 mr-1" /> <span>All Projects</span>
