@@ -218,7 +218,7 @@ export function FlashcardEditor({ project }: FlashcardEditorProps) {
         </div>
 
         {/* Action Buttons */}
-        <div className="flex flex-row justify-between gap-3 mt-6">
+        <div className="flex flex-row justify-end gap-3 mt-6">
           <button
             className="btn btn-ghost"
             onClick={handleCancel}
