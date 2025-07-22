@@ -26,7 +26,7 @@ export function useToast() {
 }
 
 export function ToastProvider({ children }: { children: ReactNode }) {
-  const { toast } = useToastStore();
+  const toast = useToastStore((state) => state.toast);
   return (
     <>
       {children}

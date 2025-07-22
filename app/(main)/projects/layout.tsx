@@ -3,6 +3,8 @@ import { SidebarNav } from "./components/SidebarNav";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { createProject } from "./components/../actions";
+import { useUserProfileStore } from "@/hooks/useUserProfile";
+import { useEffect } from "react";
 
 export default function ProjectsLayout({
   children,
@@ -11,6 +13,14 @@ export default function ProjectsLayout({
 }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const userProfile = useUserProfileStore((state) => state.userProfile);
+  const userLoading = useUserProfileStore((state) => state.isLoading);
+
+  useEffect(() => {
+    if (!userProfile) {
+      useUserProfileStore.getState().fetchUserProfile();
+    }
+  }, [userProfile]);
 
   const handleTab = async (tab: "all" | "create") => {
     if (tab === "all") {
@@ -34,8 +44,16 @@ export default function ProjectsLayout({
         <SidebarNav activeTab="all" onTab={handleTab} />
       </div>
       {/* Mobile sidebar */}
-
-      <div className="flex-1 flex flex-col min-h-screen">{children}</div>
+      <div className="flex-1 flex flex-col min-h-screen">
+        {/* Optionally show a loading indicator for user profile */}
+        {userLoading && (
+          <div className="flex items-center gap-2 h-20 justify-center">
+            <span className="loading loading-spinner loading-lg text-primary"></span>
+            Loading user profile...
+          </div>
+        )}
+        {children}
+      </div>
     </div>
   );
 }

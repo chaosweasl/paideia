@@ -7,10 +7,6 @@ import toast, { Toaster } from "react-hot-toast";
 import { EmptyState } from "./components/EmptyState";
 import { Loader2 } from "lucide-react";
 
-// --- Types ---
-// Project type now imported from normalizeProject
-// Tabs constant for tab names
-
 export default function ProjectsPage() {
   const { projects, loading, error, deleteProjectById, fetchProjects } =
     useProjectsStore();
