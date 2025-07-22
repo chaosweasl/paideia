@@ -119,7 +119,10 @@ export const useUserProfileStore = create<UserProfileState>((set, get) => ({
       const { data: urlData } = supabase.storage
         .from("avatars")
         .getPublicUrl(fileName);
-      return urlData.publicUrl;
+      const publicUrl = urlData.publicUrl;
+      // Update the profile with the new avatar URL
+      await get().updateUserProfile({ avatar_url: publicUrl });
+      return publicUrl;
     } catch (err) {
       set({ error: "Error uploading avatar" });
       throw err;

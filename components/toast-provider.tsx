@@ -1,32 +1,34 @@
 "use client";
-import { createContext, useContext, useState, ReactNode } from "react";
+import { create } from "zustand";
+import { ReactNode } from "react";
 
 type ToastType = "success" | "error" | "info" | "warning";
 type Toast = { message: string; type: ToastType };
 
-const ToastContext = createContext<
-  | {
-      showToast: (message: string, type?: ToastType) => void;
-    }
-  | undefined
->(undefined);
+interface ToastState {
+  toast: Toast | null;
+  showToast: (message: string, type?: ToastType) => void;
+  clearToast: () => void;
+}
+
+export const useToastStore = create<ToastState>((set) => ({
+  toast: null,
+  showToast: (message, type = "info") => {
+    set({ toast: { message, type } });
+    setTimeout(() => set({ toast: null }), 3000);
+  },
+  clearToast: () => set({ toast: null }),
+}));
 
 export function useToast() {
-  const ctx = useContext(ToastContext);
-  if (!ctx) throw new Error("useToast must be used within ToastProvider");
-  return ctx;
+  const { showToast } = useToastStore();
+  return { showToast };
 }
 
 export function ToastProvider({ children }: { children: ReactNode }) {
-  const [toast, setToast] = useState<Toast | null>(null);
-
-  function showToast(message: string, type: ToastType = "info") {
-    setToast({ message, type });
-    setTimeout(() => setToast(null), 3000);
-  }
-
+  const { toast } = useToastStore();
   return (
-    <ToastContext.Provider value={{ showToast }}>
+    <>
       {children}
       {toast && (
         <div className="toast toast-top toast-center z-[999]">
@@ -37,6 +39,6 @@ export function ToastProvider({ children }: { children: ReactNode }) {
           </div>
         </div>
       )}
-    </ToastContext.Provider>
+    </>
   );
 }

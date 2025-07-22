@@ -2,14 +2,14 @@
 
 import React, { useState } from "react";
 import { useToast } from "@/components/toast-provider";
-import { useUserProfile } from "@/hooks/useUserProfile";
+import { useUserProfileStore } from "@/hooks/useUserProfile";
 import Image from "next/image";
 import { ProfileSettingsForm } from "./components/ProfileSettingsForm";
 import { useSettingsActions } from "./actions";
 
 const SettingsPage = () => {
   console.log("SettingsPage: render");
-  const { userProfile, isLoading: profileLoading } = useUserProfile();
+  const { userProfile, isLoading: profileLoading } = useUserProfileStore();
   const [profilePicture, setProfilePicture] = useState<File | null>(null);
   const [displayName, setDisplayName] = useState<string>(
     userProfile?.display_name || ""

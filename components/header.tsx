@@ -3,11 +3,11 @@
 import { Menu, Sun, Moon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useTheme } from "@/hooks/useTheme";
+import { useThemeStore } from "@/hooks/useTheme";
 import { useEffect, useState } from "react";
 
 export function Header() {
-  const { theme, toggleTheme } = useTheme();
+  const { theme, toggleTheme } = useThemeStore();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {

@@ -4,14 +4,14 @@ import { Menu, LogOut, Plus, Sun, Moon } from "lucide-react";
 import { User, Settings } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useTheme } from "@/hooks/useTheme";
+import { useThemeStore } from "@/hooks/useTheme";
 import React from "react";
 import { useUserProfileStore } from "@/hooks/useUserProfile";
 import { useState, useEffect } from "react";
 import { signOut } from "../actions";
 
 export function Header() {
-  const { theme, toggleTheme } = useTheme();
+  const { theme, toggleTheme } = useThemeStore();
   const { userProfile } = useUserProfileStore();
   const [drawerOpen, setDrawerOpen] = React.useState(false);
   const [mounted, setMounted] = useState(false);
