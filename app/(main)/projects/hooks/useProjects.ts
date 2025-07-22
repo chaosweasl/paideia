@@ -1,15 +1,18 @@
-import { useState, useCallback, useRef } from "react";
+import React, { useState, useCallback, useRef } from "react";
+
 import {
   getProjects,
   createProject,
   updateProject,
   deleteProject,
 } from "../actions";
+
 import {
   normalizeProject,
   Project,
   RawProject,
 } from "../utils/normalizeProject";
+
 import { formatDate } from "..//utils/formatDate";
 
 export function useProjects() {
@@ -34,6 +37,11 @@ export function useProjects() {
       setLoading(false);
     }
   }, []);
+
+  // Fetch projects on mount
+  React.useEffect(() => {
+    fetchProjects();
+  }, [fetchProjects]);
 
   const addProject = useCallback(
     async (

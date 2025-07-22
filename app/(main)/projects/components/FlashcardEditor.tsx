@@ -32,8 +32,14 @@ export function FlashcardEditor({ project }: FlashcardEditorProps) {
   useEffect(() => {
     const valid =
       flashcards.length > 0 &&
-      flashcards.every((fc) => fc.question.trim() && fc.answer.trim());
-    setIsValid(valid && !!name.trim());
+      flashcards.every(
+        (fc) =>
+          typeof fc.question === "string" &&
+          typeof fc.answer === "string" &&
+          fc.question.trim() &&
+          fc.answer.trim()
+      );
+    setIsValid(valid && typeof name === "string" && !!name.trim());
   }, [flashcards, name]);
 
   function handleChange(field: keyof Flashcard, value: string) {
