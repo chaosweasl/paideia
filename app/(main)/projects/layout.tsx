@@ -44,16 +44,7 @@ export default function ProjectsLayout({
         <SidebarNav activeTab="all" onTab={handleTab} />
       </div>
       {/* Mobile sidebar */}
-      <div className="flex-1 flex flex-col min-h-screen">
-        {/* Optionally show a loading indicator for user profile */}
-        {userLoading && (
-          <div className="flex items-center gap-2 h-20 justify-center">
-            <span className="loading loading-spinner loading-lg text-primary"></span>
-            Loading user profile...
-          </div>
-        )}
-        {children}
-      </div>
+      <div className="flex-1 flex flex-col min-h-screen">{children}</div>
     </div>
   );
 }

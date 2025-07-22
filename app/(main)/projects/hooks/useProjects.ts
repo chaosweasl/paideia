@@ -1,10 +1,5 @@
 import { create } from "zustand";
-import {
-  getProjects,
-  createProject,
-  updateProject,
-  deleteProject,
-} from "../actions";
+import { createProject, updateProject, deleteProject } from "../actions";
 import {
   normalizeProject,
   Project,
@@ -35,7 +30,9 @@ export const useProjectsStore = create<ProjectsState>((set, get) => ({
   fetchProjects: async () => {
     set({ loading: true, error: null });
     try {
-      const data: RawProject[] = await getProjects();
+      const res = await fetch("/api/projects");
+      if (!res.ok) throw new Error("Failed to fetch projects");
+      const data: RawProject[] = await res.json();
       const normalized = data.map((p) => ({
         ...normalizeProject(p),
         formattedCreatedAt: formatDate(p.created_at),
