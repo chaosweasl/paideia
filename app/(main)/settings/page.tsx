@@ -9,7 +9,8 @@ import { useSettingsActions } from "./actions";
 
 const SettingsPage = () => {
   console.log("SettingsPage: render");
-  const { userProfile, isLoading: profileLoading } = useUserProfileStore();
+  const userProfile = useUserProfileStore((state) => state.userProfile);
+  const profileLoading = useUserProfileStore((state) => state.isLoading);
   const [profilePicture, setProfilePicture] = useState<File | null>(null);
   const [displayName, setDisplayName] = useState<string>(
     userProfile?.display_name || ""
@@ -27,8 +28,12 @@ const SettingsPage = () => {
   React.useEffect(() => {
     console.log("SettingsPage: useEffect userProfile", userProfile);
     if (userProfile) {
-      setDisplayName(userProfile.display_name || "");
-      setBio(userProfile.bio || "");
+      if (userProfile.display_name !== displayName) {
+        setDisplayName(userProfile.display_name || "");
+      }
+      if (userProfile.bio !== bio) {
+        setBio(userProfile.bio || "");
+      }
     }
   }, [userProfile]);
 
@@ -110,7 +115,11 @@ const SettingsPage = () => {
                   <div className="w-32 h-32 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
                     {userProfile?.avatar_url ? (
                       <Image
-                        src={userProfile.avatar_url}
+                        src={
+                          userProfile.avatar_url
+                            ? `${userProfile.avatar_url}?t=${Date.now()}`
+                            : ""
+                        }
                         alt="Current avatar"
                         width={128}
                         height={128}

@@ -62,9 +62,6 @@ export const useUserProfileStore = create<UserProfileState>((set, get) => ({
           }
           if (newProfile) {
             set({ userProfile: newProfile });
-            if (typeof window !== "undefined") {
-              localStorage.setItem("userProfile", JSON.stringify(newProfile));
-            }
           }
         } else {
           set({ error: "Error fetching profile" });
@@ -73,10 +70,6 @@ export const useUserProfileStore = create<UserProfileState>((set, get) => ({
       }
       if (profile) {
         set({ userProfile: profile });
-        if (typeof window !== "undefined") {
-          localStorage.setItem("userProfile", JSON.stringify(profile));
-          localStorage.setItem("userProfileCachedAt", Date.now().toString());
-        }
       }
     } catch (err) {
       set({ error: "An unexpected error occurred" });
@@ -95,11 +88,6 @@ export const useUserProfileStore = create<UserProfileState>((set, get) => ({
         .eq("id", user.id);
       if (updateError) throw updateError;
       await get().fetchUserProfile();
-      if (typeof window !== "undefined") {
-        const cached = localStorage.getItem("userProfile");
-        let merged = cached ? { ...JSON.parse(cached), ...updates } : updates;
-        localStorage.setItem("userProfile", JSON.stringify(merged));
-      }
     } catch (err) {
       set({ error: "Error updating profile" });
       throw err;
