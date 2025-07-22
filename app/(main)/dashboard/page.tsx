@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
+import { UserProfileDisplay } from "./components/UserProfileDisplay";
 
 export default async function PrivatePage() {
   console.log("DashboardPage: render");
@@ -17,6 +18,7 @@ export default async function PrivatePage() {
           <div className="hero-content text-center">
             <div className="max-w-md">
               <h1 className="text-4xl font-bold text-base-content">Welcome!</h1>
+              <UserProfileDisplay />
               <p className="py-6 text-base-content/70">
                 Hello{" "}
                 <span className="font-semibold text-primary">
