@@ -2,7 +2,6 @@
 
 import { useEffect, useState, useTransition } from "react";
 import { Flashcard } from "./utils/useProjectForm";
-import { useProjects } from "./hooks/useProjects";
 import { useProjectsStore } from "./store/projectsStore";
 import { useProjectManager } from "./hooks/useProjectManager";
 import { useUnsavedChangesWarning } from "./hooks/useUnsavedChangesWarning";
@@ -11,7 +10,6 @@ import { Tabs } from "./utils/tabs";
 import { Loader2 } from "lucide-react";
 import { ProjectList } from "./components/ProjectList";
 import toast, { Toaster } from "react-hot-toast";
-import { ProjectDrawer } from "./components/ProjectDrawer";
 import { EmptyState } from "./components/EmptyState";
 import { useRouter } from "next/navigation";
 import { createProject } from "./actions";
@@ -50,23 +48,6 @@ export default function ProjectsPage() {
     projectManager.open && originalForm && !deepEqual(form, originalForm);
   useUnsavedChangesWarning(Boolean(hasUnsavedChanges));
 
-  // Tab logic
-  const handleTab = (tab: typeof Tabs.ALL | typeof Tabs.CREATE) => {
-    if (hasUnsavedChanges) {
-      const confirmLeave = window.confirm(
-        "You have unsaved changes. Are you sure you want to leave? Unsaved changes will be lost."
-      );
-      if (!confirmLeave) return;
-    }
-    if (tab === Tabs.CREATE) {
-      handleNewProject();
-    } else {
-      setForm({ name: "", description: "", flashcards: [] });
-      setOriginalForm(null);
-      projectManager.close();
-    }
-  };
-
   // Create and redirect to new project
   const handleNewProject = () => {
     startTransition(async () => {
@@ -90,19 +71,6 @@ export default function ProjectsPage() {
     setForm({ name: "", description: "", flashcards: [] });
     setOriginalForm(null);
     projectManager.close();
-  };
-
-  // Form submit logic
-  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (projectManager.editing && projectManager.projectId) {
-      await updateProjectById(projectManager.projectId, form);
-    } else {
-      await addProject(form);
-    }
-    setOriginalForm(null);
-    closePanel({ force: true });
-    // fetchProjects is already called in store after mutation
   };
 
   // Delete logic with undo toast
@@ -135,39 +103,6 @@ export default function ProjectsPage() {
           </p>
         )}
         <Toaster position="top-center" />
-
-        {/* In-page drawer/panel for create/edit */}
-        <ProjectDrawer
-          open={projectManager.open}
-          editing={projectManager.editing}
-          form={form}
-          loading={loading}
-          error={error}
-          onClose={closePanel}
-          onFormChange={(e) =>
-            setForm((f) => ({ ...f, [e.target.name]: e.target.value }))
-          }
-          onFlashcardChange={(idx, field, value) => {
-            setForm((f) => {
-              const flashcards = [...f.flashcards];
-              flashcards[idx] = { ...flashcards[idx], [field]: value };
-              return { ...f, flashcards };
-            });
-          }}
-          onAddFlashcard={() =>
-            setForm((f) => ({
-              ...f,
-              flashcards: [...f.flashcards, { question: "", answer: "" }],
-            }))
-          }
-          onRemoveFlashcard={(idx) =>
-            setForm((f) => ({
-              ...f,
-              flashcards: f.flashcards.filter((_, i) => i !== idx),
-            }))
-          }
-          onSubmit={handleFormSubmit}
-        />
       </main>
     </>
   );
