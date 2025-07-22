@@ -1,4 +1,5 @@
 "use client";
+
 import { SidebarNav } from "./components/SidebarNav";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
@@ -14,7 +15,6 @@ export default function ProjectsLayout({
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const userProfile = useUserProfileStore((state) => state.userProfile);
-  const userLoading = useUserProfileStore((state) => state.isLoading);
 
   useEffect(() => {
     if (!userProfile) {
