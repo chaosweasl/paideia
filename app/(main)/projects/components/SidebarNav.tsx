@@ -49,7 +49,8 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({ activeTab, onTab }) => {
               <button
                 className="btn btn-sm btn-ghost w-full justify-start text-left"
                 title={project.name}
-                // You may want to add navigation logic here
+                onClick={() => router.push(`/projects/${project.id}`)}
+                type="button"
               >
                 <span className="font-medium">
                   {truncateTitle(project.name)}

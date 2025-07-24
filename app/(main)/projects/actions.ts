@@ -18,9 +18,12 @@ export async function getProjectById(id: string): Promise<Project | null> {
     .eq("user_id", user.id)
     .single();
   if (error || !data) return null;
+  // Ensure each flashcard has an id property
+  let flashcards: any[] = Array.isArray(data.flashcards) ? data.flashcards : [];
+  flashcards = flashcards.map((card, idx) => ({ ...card, id: `${idx}` }));
   return {
     ...data,
-    flashcards: Array.isArray(data.flashcards) ? data.flashcards : [],
+    flashcards,
   };
 }
 
