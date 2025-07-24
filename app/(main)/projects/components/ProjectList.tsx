@@ -9,7 +9,10 @@ export function ProjectList() {
       {projects.map((project) => (
         <ProjectCard
           key={project.id}
-          project={project}
+          project={{
+            ...project,
+            formattedCreatedAt: project.formattedCreatedAt ?? "",
+          }}
           onDelete={deleteProjectById}
         />
       ))}
