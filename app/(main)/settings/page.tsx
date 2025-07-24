@@ -4,6 +4,8 @@ import React from "react";
 import { useUserProfileStore } from "@/hooks/useUserProfile";
 import Image from "next/image";
 import { ProfileSettingsForm } from "./components/ProfileSettingsForm";
+import { useToast } from "@/components/toast-provider";
+import { useSettingsActions } from "./actions";
 
 const SettingsPage = () => {
   console.log("SettingsPage: render");
@@ -20,14 +22,28 @@ const SettingsPage = () => {
       }
     : undefined;
 
-  const onSave = (data: {
+  const { showToast } = useToast();
+  const { handleSave } = useSettingsActions();
+
+  const onSave = async (data: {
     displayName: string;
     bio: string;
     profilePicture: File | null;
   }) => {
-    // You can add validation or toast logic here if needed
     console.log("SettingsPage: onSave called", data);
-    // Call your save logic, e.g. useSettingsActions().handleSave(data)
+    try {
+      await handleSave({
+        profilePicture: data.profilePicture,
+        displayName: data.displayName,
+        bio: data.bio,
+        setIsLoading: () => {}, // Optionally wire up loading state
+        showToast,
+        setProfilePicture: () => {}, // Optionally wire up avatar preview
+        setPreviewUrl: () => {},
+      });
+    } catch (err) {
+      showToast("Error updating profile", "error");
+    }
   };
 
   if (profileLoading) {

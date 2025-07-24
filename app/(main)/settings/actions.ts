@@ -1,7 +1,3 @@
-// actions.ts for SettingsPage
-// Contains logic for updating user profile, uploading avatar, and related actions
-
-// Type definitions for actions
 export interface HandleSaveParams {
   profilePicture: File | null;
   displayName: string;
