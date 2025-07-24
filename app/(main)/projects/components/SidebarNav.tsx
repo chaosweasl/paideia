@@ -36,7 +36,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({ activeTab, onTab }) => {
       <div className="border-b border-base-300 my-2" />
       {/* Scrollable project list */}
       <div className="flex-1 overflow-y-auto">
-        {loading && (
+        {loading && projects.length === 0 && (
           <div className="text-sm text-base-content/50">Loading...</div>
         )}
         {error && <div className="text-sm text-error">{error}</div>}

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { createProject } from "./components/../actions";
 import { useUserProfileStore } from "@/hooks/useUserProfile";
+import { useProjectsStore } from "./hooks/useProjects";
 import { useEffect } from "react";
 
 export default function ProjectsLayout({
@@ -15,12 +16,14 @@ export default function ProjectsLayout({
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const userProfile = useUserProfileStore((state) => state.userProfile);
+  const { fetchProjects } = useProjectsStore();
 
   useEffect(() => {
     if (!userProfile) {
       useUserProfileStore.getState().fetchUserProfile();
     }
-  }, [userProfile]);
+    fetchProjects();
+  }, [userProfile, fetchProjects]);
 
   const handleTab = async (tab: "all" | "create") => {
     if (tab === "all") {
