@@ -11,13 +11,34 @@ interface ToastState {
   clearToast: () => void;
 }
 
+// Global timeout ref to prevent multiple active timers
+let toastTimeout: NodeJS.Timeout | null = null;
+
 export const useToastStore = create<ToastState>((set) => ({
   toast: null,
   showToast: (message, type = "info") => {
+    // Immediately replace current toast
     set({ toast: { message, type } });
-    setTimeout(() => set({ toast: null }), 3000);
+
+    // Clear any previous toast timeout
+    if (toastTimeout) {
+      clearTimeout(toastTimeout);
+      toastTimeout = null;
+    }
+
+    // Set a new timeout
+    toastTimeout = setTimeout(() => {
+      set({ toast: null });
+      toastTimeout = null;
+    }, 3000);
   },
-  clearToast: () => set({ toast: null }),
+  clearToast: () => {
+    if (toastTimeout) {
+      clearTimeout(toastTimeout);
+      toastTimeout = null;
+    }
+    set({ toast: null });
+  },
 }));
 
 export function useToast() {
@@ -27,6 +48,7 @@ export function useToast() {
 
 export function ToastProvider({ children }: { children: ReactNode }) {
   const toast = useToastStore((state) => state.toast);
+
   return (
     <>
       {children}

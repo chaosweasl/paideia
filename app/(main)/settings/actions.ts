@@ -1,3 +1,5 @@
+import { useUserProfileStore } from "@/hooks/useUserProfile";
+
 export interface HandleSaveParams {
   profilePicture: File | null;
   displayName: string;
@@ -17,7 +19,55 @@ export interface HandleFileSelectParams {
   setPreviewUrl: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
-import { useUserProfileStore } from "@/hooks/useUserProfile";
+// --- Rate Limiting Constants ---
+const TEN_SECONDS = 10 * 1000;
+const ONE_HOUR = 60 * 60 * 1000;
+const MAX_CHANGES_PER_HOUR = 3;
+const STORAGE_KEY = "profileUpdateTimestamps";
+
+function getTimestamps(): number[] {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
+function setTimestamps(timestamps: number[]) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(timestamps));
+}
+
+function canProceedWithUpdate(): { allowed: boolean; message?: string } {
+  const now = Date.now();
+  const timestamps = getTimestamps().filter((ts) => now - ts < ONE_HOUR);
+
+  if (timestamps.length >= MAX_CHANGES_PER_HOUR) {
+    return {
+      allowed: false,
+      message: "You can only update your profile 3 times per hour.",
+    };
+  }
+
+  const last = timestamps[timestamps.length - 1];
+  if (last && now - last < TEN_SECONDS) {
+    const secondsLeft = Math.ceil((TEN_SECONDS - (now - last)) / 1000);
+    return {
+      allowed: false,
+      message: `Please wait ${secondsLeft}s before trying again.`,
+    };
+  }
+
+  return { allowed: true };
+}
+
+function recordUpdateTimestamp() {
+  const now = Date.now();
+  const timestamps = getTimestamps()
+    .filter((ts) => now - ts < ONE_HOUR)
+    .concat(now);
+  setTimestamps(timestamps);
+}
 
 export function useSettingsActions() {
   const {
@@ -26,6 +76,60 @@ export function useSettingsActions() {
     updateUserProfile,
     uploadAvatar,
   } = useUserProfileStore();
+
+  function validateProfile(
+    displayName: string,
+    bio: string
+  ): {
+    valid: boolean;
+    message?: string;
+    type?: "error" | "info";
+    trimmedDisplayName?: string;
+    trimmedBio?: string;
+  } {
+    const trimmedDisplayName = displayName.trim();
+    const trimmedBio = bio.trim();
+
+    if (trimmedDisplayName.length > 21)
+      return {
+        valid: false,
+        message: "Display name must be 21 characters or less.",
+        type: "error",
+      };
+    if (/\s/.test(trimmedDisplayName))
+      return {
+        valid: false,
+        message: "Display name cannot contain whitespace.",
+        type: "error",
+      };
+    if (trimmedBio.length > 500)
+      return {
+        valid: false,
+        message: "Bio must be 500 characters or less.",
+        type: "error",
+      };
+
+    return { valid: true, trimmedDisplayName, trimmedBio };
+  }
+
+  function getChangedFields({
+    trimmedDisplayName,
+    trimmedBio,
+    userProfile,
+    profilePicture,
+  }: {
+    trimmedDisplayName: string;
+    trimmedBio: string;
+    userProfile: any;
+    profilePicture: File | null;
+  }) {
+    return {
+      isDisplayNameChanged:
+        trimmedDisplayName !== (userProfile?.display_name ?? ""),
+      isBioChanged: trimmedBio !== (userProfile?.bio ?? ""),
+      isAvatarChanged: !!profilePicture,
+    };
+  }
 
   const handleSave = async ({
     profilePicture,
@@ -36,39 +140,63 @@ export function useSettingsActions() {
     setProfilePicture,
     setPreviewUrl,
   }: HandleSaveParams) => {
+    const validation = validateProfile(displayName, bio);
+    if (!validation.valid) {
+      showToast?.(
+        validation.message || "Invalid input.",
+        validation.type || "error"
+      );
+      return;
+    }
+
+    const { trimmedDisplayName, trimmedBio } = validation;
+
+    const { isDisplayNameChanged, isBioChanged, isAvatarChanged } =
+      getChangedFields({
+        trimmedDisplayName: trimmedDisplayName ?? "",
+        trimmedBio: trimmedBio ?? "",
+        userProfile,
+        profilePicture,
+      });
+
+    if (!isDisplayNameChanged && !isBioChanged && !isAvatarChanged) {
+      showToast?.("No changes to save.", "info");
+      return;
+    }
+
+    const rateLimitCheck = canProceedWithUpdate();
+    if (!rateLimitCheck.allowed) {
+      showToast?.(rateLimitCheck.message || "Rate limited.", "warning");
+      return;
+    }
+
     setIsLoading(true);
-    if (showToast) showToast("", "info");
-    if (displayName.length > 32) {
-      if (showToast)
-        showToast("Display name must be 32 characters or less.", "error");
-      setIsLoading(false);
-      return;
-    }
-    if (/\s/.test(displayName)) {
-      if (showToast)
-        showToast("Display name cannot contain whitespace.", "error");
-      setIsLoading(false);
-      return;
-    }
-    if (bio.length > 500) {
-      if (showToast) showToast("Bio must be 500 characters or less.", "error");
-      setIsLoading(false);
-      return;
-    }
+
     try {
-      let avatarUrl = userProfile?.avatar_url || "";
-      if (profilePicture) {
-        avatarUrl = await uploadAvatar(profilePicture);
-        await updateUserProfile({ avatar_url: avatarUrl });
+      let updatedAvatarUrl = userProfile?.avatar_url ?? "";
+
+      if (isAvatarChanged && profilePicture) {
+        // Don't clear preview yet — keep it until upload finishes
+        updatedAvatarUrl = await uploadAvatar(profilePicture);
       }
-      await updateUserProfile({ display_name: displayName, bio });
-      if (showToast) showToast("Profile updated successfully!", "success");
+
+      await updateUserProfile({
+        ...(isDisplayNameChanged ? { display_name: trimmedDisplayName } : {}),
+        ...(isBioChanged ? { bio: trimmedBio } : {}),
+        ...(isAvatarChanged ? { avatar_url: updatedAvatarUrl } : {}),
+      });
+
+      recordUpdateTimestamp();
+      showToast?.("Profile updated successfully!", "success");
+
+      // Reset after success
       setProfilePicture(null);
       setPreviewUrl(null);
-    } catch {
-      if (showToast) showToast("Error updating profile", "error");
+    } catch (err: any) {
+      showToast?.(err?.message || "Error updating profile", "error");
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   const handleFileSelect = ({
@@ -77,6 +205,7 @@ export function useSettingsActions() {
     setPreviewUrl,
   }: HandleFileSelectParams) => {
     setProfilePicture(file);
+
     if (file && file.type.startsWith("image/")) {
       const reader = new FileReader();
       reader.onload = (e) => {
