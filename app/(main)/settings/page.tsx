@@ -6,6 +6,7 @@ import Image from "next/image";
 import { ProfileSettingsForm } from "./components/ProfileSettingsForm";
 import { useToast } from "@/components/toast-provider";
 import { useSettingsActions } from "./actions";
+import nopfp from "@/public/assets/nopfp.png";
 
 const SettingsPage = () => {
   console.log("SettingsPage: render");
@@ -99,8 +100,13 @@ const SettingsPage = () => {
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center bg-primary text-primary-content font-bold text-3xl rounded-full">
-                        {userProfile?.display_name?.charAt(0)?.toUpperCase() ||
-                          "U"}
+                        <Image
+                          src={nopfp}
+                          alt="Default avatar"
+                          width={128}
+                          height={128}
+                          className="object-cover rounded-full"
+                        />
                       </div>
                     )}
                   </div>
