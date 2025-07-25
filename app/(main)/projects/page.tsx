@@ -9,8 +9,10 @@ import { Loader2 } from "lucide-react";
 export default function ProjectsPage() {
   const { projects, loading, error, fetchProjects } = useProjectsStore();
   useEffect(() => {
-    fetchProjects();
-  }, []);
+    if (!loading && projects.length === 0) {
+      fetchProjects();
+    }
+  }, [loading, projects.length, fetchProjects]);
 
   // --- Layout ---
   return (

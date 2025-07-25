@@ -22,12 +22,18 @@ interface ProjectsState {
 }
 
 let undoRef: null | (() => void) = null;
+let isFetching = false;
 
 export const useProjectsStore = create<ProjectsState>((set, get) => ({
   projects: [],
   loading: true,
   error: null,
   fetchProjects: async () => {
+    if (isFetching || get().loading) {
+      set({ loading: false });
+      return;
+    }
+    isFetching = true;
     set({ loading: true, error: null });
     try {
       const res = await fetch("/api/projects");
@@ -42,6 +48,7 @@ export const useProjectsStore = create<ProjectsState>((set, get) => ({
       set({ error: "Failed to load projects" });
     } finally {
       set({ loading: false });
+      isFetching = false;
     }
   },
   addProject: async (project) => {

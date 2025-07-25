@@ -21,8 +21,9 @@ export default function ProjectsLayout({
   useEffect(() => {
     if (!userProfile) {
       useUserProfileStore.getState().fetchUserProfile();
+    } else {
+      fetchProjects();
     }
-    fetchProjects();
   }, [userProfile, fetchProjects]);
 
   const handleTab = async (tab: "all" | "create") => {
