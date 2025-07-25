@@ -223,5 +223,7 @@ const ProfileSettingsForm: React.FC<ProfileSettingsFormProps> = React.memo(
   }
 );
 
+ProfileSettingsForm.displayName = "ProfileSettingsForm";
+
 export default ProfileSettingsForm;
 export { ProfileSettingsForm };

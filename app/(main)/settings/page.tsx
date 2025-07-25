@@ -42,7 +42,7 @@ const SettingsPage = () => {
         setProfilePicture: () => {}, // Optionally wire up avatar preview
         setPreviewUrl: () => {},
       });
-    } catch (err) {
+    } catch {
       showToast("Error updating profile", "error");
     }
   };

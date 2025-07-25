@@ -120,13 +120,19 @@ export function useSettingsActions() {
   }: {
     trimmedDisplayName: string;
     trimmedBio: string;
-    userProfile: any;
+    userProfile: unknown;
     profilePicture: File | null;
   }) {
+    let displayName = "";
+    let bio = "";
+    if (userProfile && typeof userProfile === "object") {
+      displayName =
+        (userProfile as { display_name?: string }).display_name ?? "";
+      bio = (userProfile as { bio?: string }).bio ?? "";
+    }
     return {
-      isDisplayNameChanged:
-        trimmedDisplayName !== (userProfile?.display_name ?? ""),
-      isBioChanged: trimmedBio !== (userProfile?.bio ?? ""),
+      isDisplayNameChanged: trimmedDisplayName !== displayName,
+      isBioChanged: trimmedBio !== bio,
       isAvatarChanged: !!profilePicture,
     };
   }
@@ -192,8 +198,15 @@ export function useSettingsActions() {
       // Reset after success
       setProfilePicture(null);
       setPreviewUrl(null);
-    } catch (err: any) {
-      showToast?.(err?.message || "Error updating profile", "error");
+    } catch (err) {
+      if (err && typeof err === "object" && "message" in err) {
+        showToast?.(
+          (err as { message?: string }).message || "Error updating profile",
+          "error"
+        );
+      } else {
+        showToast?.("Error updating profile", "error");
+      }
     } finally {
       setIsLoading(false);
     }

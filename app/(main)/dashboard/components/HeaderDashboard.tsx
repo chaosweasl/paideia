@@ -59,6 +59,7 @@ export function Header() {
                   width={32}
                   height={32}
                   className="w-8 h-8"
+                  priority
                 />{" "}
                 Cognify
               </Link>
@@ -158,6 +159,7 @@ export function Header() {
             width={32}
             height={32}
             className="w-8 h-8"
+            priority
           />{" "}
           Cognify
         </Link>

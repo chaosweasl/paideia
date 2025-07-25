@@ -12,7 +12,7 @@ export default function MainLayout({
   const { fetchUserProfile } = useUserProfileStore();
   useEffect(() => {
     fetchUserProfile();
-  }, []);
+  }, [fetchUserProfile]);
 
   return (
     <>

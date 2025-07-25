@@ -47,6 +47,18 @@ export default function StudyFlashcards({
   const card = cards[current];
 
   // Keyboard navigation
+  const handleFlip = () => setFlipped((f) => !f);
+
+  const handleNext = React.useCallback(() => {
+    setFlipped(false);
+    setCurrent((prev) => (prev + 1 < cards.length ? prev + 1 : 0));
+  }, [cards.length]);
+
+  const handlePrev = React.useCallback(() => {
+    setFlipped(false);
+    setCurrent((prev) => (prev - 1 >= 0 ? prev - 1 : cards.length - 1));
+  }, [cards.length]);
+
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
       if (e.key === "ArrowLeft" || e.key === "a") handlePrev();
@@ -60,19 +72,7 @@ export default function StudyFlashcards({
 
     window.addEventListener("keydown", handleKeyPress);
     return () => window.removeEventListener("keydown", handleKeyPress);
-  }, [current, cards.length]);
-
-  const handleFlip = () => setFlipped((f) => !f);
-
-  const handleNext = () => {
-    setFlipped(false);
-    setCurrent((prev) => (prev + 1 < cards.length ? prev + 1 : 0));
-  };
-
-  const handlePrev = () => {
-    setFlipped(false);
-    setCurrent((prev) => (prev - 1 >= 0 ? prev - 1 : cards.length - 1));
-  };
+  }, [current, cards.length, handlePrev, handleNext]);
 
   const handleReset = () => {
     setCurrent(0);

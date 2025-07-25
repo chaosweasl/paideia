@@ -39,7 +39,7 @@ export const LoginForm: React.FC = () => {
     setLoading(false);
   };
 
-  const handleGithubLogin = async (e: React.MouseEvent) => {
+  const handleGithubLogin = async () => {
     setLoading(true);
     await signInWithGithub();
     setLoading(false);

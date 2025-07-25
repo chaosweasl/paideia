@@ -14,7 +14,7 @@ export default function ProjectsLayout({
   children: React.ReactNode;
 }) {
   const router = useRouter();
-  const [isPending, startTransition] = useTransition();
+  const [, startTransition] = useTransition();
   const userProfile = useUserProfileStore((state) => state.userProfile);
   const { fetchProjects } = useProjectsStore();
 

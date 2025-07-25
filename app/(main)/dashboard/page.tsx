@@ -1,6 +1,7 @@
 "use client";
 
 import { useUserProfileStore } from "@/hooks/useUserProfile";
+import Image from "next/image";
 
 export default function PrivatePage() {
   // Get user profile from Zustand
@@ -29,10 +30,13 @@ function UserProfileInline() {
   return (
     <div className="flex flex-col items-center">
       {userProfile.avatar_url && (
-        <img
+        <Image
           src={userProfile.avatar_url}
           alt="Avatar"
+          width={64}
+          height={64}
           className="w-16 h-16 rounded-full mb-2 object-cover"
+          priority
         />
       )}
       <div className="font-bold text-lg text-primary">
