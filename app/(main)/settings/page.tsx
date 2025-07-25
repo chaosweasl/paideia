@@ -1,73 +1,51 @@
 "use client";
 
-import React, { useState } from "react";
-import { useToast } from "@/components/toast-provider";
-import { useUserProfile } from "@/hooks/useUserProfile";
+import React from "react";
+import { useUserProfileStore } from "@/hooks/useUserProfile";
 import Image from "next/image";
 import { ProfileSettingsForm } from "./components/ProfileSettingsForm";
+import { useToast } from "@/components/toast-provider";
 import { useSettingsActions } from "./actions";
+import nopfp from "@/public/assets/nopfp.png";
 
 const SettingsPage = () => {
   console.log("SettingsPage: render");
-  const { userProfile, isLoading: profileLoading } = useUserProfile();
-  const [profilePicture, setProfilePicture] = useState<File | null>(null);
-  const [displayName, setDisplayName] = useState<string>(
-    userProfile?.display_name || ""
-  );
-  const [bio, setBio] = useState<string>(userProfile?.bio || "");
-  const [validationError, setValidationError] = useState<string>("");
-  const [isLoading, setIsLoading] = useState(false);
+  const userProfileRaw = useUserProfileStore((state) => state.userProfile);
+  const profileLoading = useUserProfileStore((state) => state.isLoading);
+  const isLoading = Boolean(profileLoading);
+
+  // Map userProfileRaw to expected shape for UI and ProfileSettingsForm
+  const userProfile = userProfileRaw
+    ? {
+        display_name: userProfileRaw.display_name,
+        avatar_url: userProfileRaw.avatar_url,
+        bio: userProfileRaw.bio,
+      }
+    : undefined;
+
   const { showToast } = useToast();
-  const [showPreview, setShowPreview] = useState(false);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const { handleSave } = useSettingsActions();
 
-  const { handleSave, handleFileSelect } = useSettingsActions();
-
-  // Update local state when profile loads
-  React.useEffect(() => {
-    console.log("SettingsPage: useEffect userProfile", userProfile);
-    if (userProfile) {
-      setDisplayName(userProfile.display_name || "");
-      setBio(userProfile.bio || "");
+  const onSave = async (data: {
+    displayName: string;
+    bio: string;
+    profilePicture: File | null;
+  }) => {
+    console.log("SettingsPage: onSave called", data);
+    try {
+      await handleSave({
+        profilePicture: data.profilePicture,
+        displayName: data.displayName,
+        bio: data.bio,
+        setIsLoading: () => {}, // Optionally wire up loading state
+        showToast,
+        setProfilePicture: () => {}, // Optionally wire up avatar preview
+        setPreviewUrl: () => {},
+      });
+    } catch {
+      showToast("Error updating profile", "error");
     }
-  }, [userProfile]);
-
-  React.useEffect(() => {
-    // Validation logic, but do not show until Save is clicked
-    let error = "";
-    if (displayName.length > 32) {
-      error = "Display name must be 32 characters or less.";
-    } else if (/\s/.test(displayName)) {
-      error = "Display name cannot contain whitespace.";
-    } else if (bio.length > 500) {
-      error = "Bio must be 500 characters or less.";
-    }
-    setValidationError(error);
-  }, [displayName, bio]);
-
-  const onSave = () => {
-    console.log("SettingsPage: onSave called", {
-      displayName,
-      bio,
-      profilePicture,
-    });
-    if (validationError) {
-      showToast(validationError, "error");
-      return;
-    }
-    handleSave({
-      profilePicture,
-      displayName,
-      bio,
-      setIsLoading,
-      setProfilePicture,
-      setPreviewUrl,
-      showToast,
-    });
   };
-
-  const onFileSelect = (file: File | null) =>
-    handleFileSelect({ file, setProfilePicture, setPreviewUrl });
 
   if (profileLoading) {
     return (
@@ -110,7 +88,11 @@ const SettingsPage = () => {
                   <div className="w-32 h-32 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
                     {userProfile?.avatar_url ? (
                       <Image
-                        src={userProfile.avatar_url}
+                        src={
+                          userProfile.avatar_url
+                            ? `${userProfile.avatar_url}?t=${Date.now()}`
+                            : ""
+                        }
                         alt="Current avatar"
                         width={128}
                         height={128}
@@ -118,8 +100,13 @@ const SettingsPage = () => {
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center bg-primary text-primary-content font-bold text-3xl rounded-full">
-                        {userProfile?.display_name?.charAt(0)?.toUpperCase() ||
-                          "U"}
+                        <Image
+                          src={nopfp}
+                          alt="Default avatar"
+                          width={128}
+                          height={128}
+                          className="object-cover rounded-full"
+                        />
                       </div>
                     )}
                   </div>
@@ -137,16 +124,16 @@ const SettingsPage = () => {
           {/* Profile Settings Card */}
           <div className="lg:col-span-2">
             <ProfileSettingsForm
-              profilePicture={profilePicture}
-              displayName={displayName}
-              bio={bio}
+              userProfile={
+                userProfile
+                  ? {
+                      displayName: userProfile.display_name || undefined,
+                      bio: userProfile.bio || undefined,
+                      avatarUrl: userProfile.avatar_url || undefined,
+                    }
+                  : undefined
+              }
               isLoading={isLoading}
-              showPreview={showPreview}
-              previewUrl={previewUrl}
-              onFileSelect={onFileSelect}
-              setShowPreview={setShowPreview}
-              setDisplayName={setDisplayName}
-              setBio={setBio}
               onSave={onSave}
             />
           </div>

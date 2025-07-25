@@ -1,5 +1,51 @@
 "use server";
 
+import { createClient } from "@/utils/supabase/server";
+
+// Fetch a single project by id for the current user
+export async function getProjectById(id: string): Promise<Project | null> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+  if (userError || !user) return null;
+
+  const { data, error } = await supabase
+    .from("projects")
+    .select("id, name, description, created_at, flashcards")
+    .eq("id", id)
+    .eq("user_id", user.id)
+    .single();
+  if (error || !data) return null;
+  // Ensure each flashcard has an id property
+  let flashcards: Flashcard[] = Array.isArray(data.flashcards)
+    ? data.flashcards
+    : [];
+  flashcards = flashcards.map((card, idx) => ({ ...card, id: `${idx}` }));
+  return {
+    ...data,
+    flashcards,
+  };
+}
+
+// Update only the flashcards array for a project
+export async function updateFlashcards(id: string, flashcards: Flashcard[]) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+  if (userError || !user) throw new Error("Not authenticated");
+
+  const { error } = await supabase
+    .from("projects")
+    .update({ flashcards })
+    .eq("id", id)
+    .eq("user_id", user.id);
+  if (error) throw error;
+}
+
 // --- Types ---
 export type Flashcard = {
   question: string;
@@ -14,8 +60,6 @@ export type Project = {
   flashcards?: Flashcard[];
   formattedCreatedAt?: string;
 };
-
-import { createClient } from "@/utils/supabase/server";
 
 export async function getProjects(): Promise<Project[]> {
   const supabase = await createClient();
@@ -53,15 +97,19 @@ export async function createProject({
   } = await supabase.auth.getUser();
   if (userError || !user) throw new Error("Not authenticated");
 
-  const { error } = await supabase.from("projects").insert([
-    {
-      user_id: user.id,
-      name,
-      description,
-      flashcards,
-    },
-  ]);
+  const { data, error } = await supabase
+    .from("projects")
+    .insert([
+      {
+        user_id: user.id,
+        name,
+        description,
+        flashcards,
+      },
+    ])
+    .select("id");
   if (error) throw error;
+  return data && data[0]?.id;
 }
 
 export async function updateProject({

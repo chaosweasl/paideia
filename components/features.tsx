@@ -1,7 +1,17 @@
+"use client";
+
 import { Brain, FileText, Database, Key } from "lucide-react";
 
-export function Features() {
-  const features = [
+import { create } from "zustand";
+
+interface Feature {
+  icon: React.ElementType;
+  title: string;
+  description: string;
+}
+
+export const useFeaturesStore = create<{ features: Feature[] }>(() => ({
+  features: [
     {
       icon: Brain,
       title: "AI-Powered Generation",
@@ -26,8 +36,11 @@ export function Features() {
       description:
         "Use your own AI API token for complete control and privacy. No subscription fees, just bring your preferred AI service.",
     },
-  ];
+  ],
+}));
 
+export function Features() {
+  const { features } = useFeaturesStore();
   return (
     <section id="features" className="py-20 bg-base-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

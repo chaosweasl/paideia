@@ -1,41 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import { useToast } from "@/components/toast-provider";
-import { signInWithGithub, login, signup } from "./actions";
 import { LoginForm } from "./components/LoginForm";
 
 export default function LoginPage() {
   console.log("LoginPage: render");
-  const [signupSuccess, setSignupSuccess] = useState(false);
-  const { showToast } = useToast();
-
-  async function handleLogin(formData: FormData) {
-    console.log("LoginPage: handleLogin called", formData);
-    const result = await login(formData);
-    if (result?.error) {
-      showToast(result.error, "error");
-    } else {
-      showToast("Login successful!", "success");
-    }
-  }
-
-  async function handleSignup(formData: FormData) {
-    console.log("LoginPage: handleSignup called", formData);
-    const result = await signup(formData);
-    if (result?.error) {
-      showToast(result.error, "error");
-    } else if (result?.success) {
-      setSignupSuccess(true);
-      showToast("Account created! Please check your email.", "success");
-    }
-  }
-
-  async function handleGithubLogin(e: React.MouseEvent) {
-    console.log("LoginPage: handleGithubLogin called");
-    e.preventDefault();
-    await signInWithGithub();
-  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-base-200 p-4">
@@ -50,12 +18,7 @@ export default function LoginPage() {
               to get started.
             </p>
           </div>
-          <LoginForm
-            signupSuccess={signupSuccess}
-            handleLogin={handleLogin}
-            handleSignup={handleSignup}
-            handleGithubLogin={handleGithubLogin}
-          />
+          <LoginForm />
         </div>
       </div>
     </div>

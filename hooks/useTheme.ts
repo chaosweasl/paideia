@@ -1,33 +1,31 @@
-import { useCallback, useEffect, useState } from "react";
+import { create } from "zustand";
 
 const THEME_KEY = "theme";
 const DEFAULT_THEME = "dim";
 
-export function useTheme() {
-  // Use lazy initializer to read from localStorage on first render (client only)
-  const [theme, setTheme] = useState(() => {
-    if (typeof window !== "undefined") {
-      return (
-        localStorage.getItem(THEME_KEY) ||
+interface ThemeState {
+  theme: string;
+  setTheme: (theme: string) => void;
+  toggleTheme: () => void;
+}
+
+export const useThemeStore = create<ThemeState>((set, get) => ({
+  theme:
+    typeof window !== "undefined"
+      ? localStorage.getItem(THEME_KEY) ||
         document.documentElement.getAttribute("data-theme") ||
         DEFAULT_THEME
-      );
-    }
-    return DEFAULT_THEME;
-  });
-
-  // Update <html> and localStorage when theme changes
-  useEffect(() => {
+      : DEFAULT_THEME,
+  setTheme: (theme) => {
+    set({ theme });
     if (typeof window !== "undefined") {
       document.documentElement.setAttribute("data-theme", theme);
       localStorage.setItem(THEME_KEY, theme);
     }
-  }, [theme]);
-
-  // DaisyUI toggle: just swap between two or more themes
-  const toggleTheme = useCallback(() => {
-    setTheme((prev) => (prev === "dim" ? "lemonade" : "dim"));
-  }, []);
-
-  return { theme, setTheme, toggleTheme };
-}
+  },
+  toggleTheme: () => {
+    const current = get().theme;
+    const next = current === "dim" ? "lemonade" : "dim";
+    get().setTheme(next);
+  },
+}));

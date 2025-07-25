@@ -1,24 +1,25 @@
-import React, { useState } from "react";
-import { useUserProfile } from "@/hooks/useUserProfile";
+import { create } from "zustand";
+import { useUserProfileStore } from "@/hooks/useUserProfile";
+
+interface DashboardHeaderState {
+  drawerOpen: boolean;
+  setDrawerOpen: (open: boolean) => void;
+}
+
+export const useDashboardHeaderStore = create<DashboardHeaderState>((set) => ({
+  drawerOpen: false,
+  setDrawerOpen: (open) => set({ drawerOpen: open }),
+}));
 
 export function useDashboardHeader() {
-  console.log("useDashboardHeader: render");
-  const { userProfile } = useUserProfile();
-  const [user, setUser] = useState({
-    name: "User",
-    avatar: "/assets/nopfp.png",
-  });
-  const [drawerOpen, setDrawerOpen] = useState(false);
-
-  React.useEffect(() => {
-    if (userProfile) {
-      setUser({
-        name: userProfile.display_name || "User",
-        avatar: userProfile.avatar_url || "/assets/nopfp.png",
-      });
-      console.log("useDashboardHeader: userProfile updated", userProfile);
-    }
-  }, [userProfile]);
-
-  return { user, drawerOpen, setDrawerOpen };
+  const { userProfile } = useUserProfileStore();
+  const { drawerOpen, setDrawerOpen } = useDashboardHeaderStore();
+  return {
+    user: {
+      name: userProfile?.display_name || "User",
+      avatar: userProfile?.avatar_url || "/assets/nopfp.png",
+    },
+    drawerOpen,
+    setDrawerOpen,
+  };
 }
