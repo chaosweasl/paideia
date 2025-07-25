@@ -38,7 +38,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
     setIsDeleting(true);
     try {
       await onDelete(project.id);
-    } catch (error) {
+    } catch {
       setIsDeleting(false);
     }
   };
