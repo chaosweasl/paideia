@@ -50,12 +50,7 @@ export default function LoginPage() {
               to get started.
             </p>
           </div>
-          <LoginForm
-            signupSuccess={signupSuccess}
-            handleLogin={handleLogin}
-            handleSignup={handleSignup}
-            handleGithubLogin={handleGithubLogin}
-          />
+          <LoginForm />
         </div>
       </div>
     </div>
