@@ -104,7 +104,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
                 : "opacity-0 -translate-y-2"
             }`}
           >
-            <Link href={`/projects/${project.id}/study`}>
+            <Link href={`/projects/${project.id}`}>
               <button className="btn btn-sm btn-success gap-1.5 shadow-lg hover:shadow-xl">
                 <Play className="w-3.5 h-3.5" />
                 Study
@@ -124,7 +124,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
           {/* Primary action - Study (if has flashcards) or Edit */}
           {hasFlashcards ? (
             <Link
-              href={`/projects/${project.id}/study`}
+              href={`/projects/${project.id}`}
               className="w-full flex justify-center items-center "
             >
               <button className="btn btn-primary p-2 gap-4 shadow-lg hover:shadow-xl w-50">
