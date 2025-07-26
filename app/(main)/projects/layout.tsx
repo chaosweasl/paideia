@@ -44,7 +44,7 @@ export default function ProjectsLayout({
   return (
     <div className="flex min-h-screen bg-base-100">
       <SidebarNav activeTab="all" onTab={handleTab} />
-      <div className="flex-1 flex flex-col min-h-screen md:ml-64">
+      <div className="flex-1 flex flex-col min-h-screen md:ml-64 p-4 md:p-0">
         {children}
       </div>
     </div>

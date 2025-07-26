@@ -70,7 +70,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
       <div className="bg-base-200 px-6 py-4 border-t border-base-300 flex flex-wrap justify-center items-center gap-3">
         {hasFlashcards ? (
           <Link href={`/projects/${project.id}`}>
-            <button className="btn btn-md btn-success gap-2 flex-auto max-w-[8rem]">
+            <button className="btn btn-md btn-success gap-2 flex-auto max-w-[6rem]">
               <Play className="w-4 h-4" />
               Study
             </button>
@@ -85,7 +85,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
         )}
 
         <Link href={`/projects/${project.id}/edit`}>
-          <button className="btn btn-md btn-ghost hover:btn-neutral gap-2 flex-auto max-w-[8rem]">
+          <button className="btn btn-md btn-ghost hover:btn-neutral gap-2 flex-auto max-w-[6rem]">
             <Edit2 className="w-4 h-4" />
             Edit
           </button>
@@ -94,7 +94,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
         <button
           onClick={handleDelete}
           disabled={isDeleting}
-          className={`btn btn-md btn-ghost hover:btn-error gap-2 flex-auto max-w-[8rem] ${
+          className={`btn btn-md btn-ghost hover:btn-error gap-2 flex-auto max-w-[6rem] ${
             isDeleting ? "loading" : ""
           }`}
         >

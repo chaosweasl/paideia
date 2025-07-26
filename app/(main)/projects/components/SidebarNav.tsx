@@ -175,7 +175,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({ activeTab, onTab }) => {
         <button
           className={`fixed top-1/2 -translate-y-1/2 z-50 transition-all duration-300 ${
             isOpen ? "left-64" : "left-0"
-          } w-12 h-16 flex items-center justify-center bg-transparent hover:bg-black/20 rounded-r-full border-none`}
+          } w-10 h-12 flex items-center justify-center bg-base-200/80 rounded-r-full border-none`}
           onClick={() => setIsOpen(!isOpen)}
           type="button"
           aria-label={isOpen ? "Close sidebar" : "Open sidebar"}
