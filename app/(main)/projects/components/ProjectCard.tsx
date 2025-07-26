@@ -85,7 +85,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
         )}
 
         <Link href={`/projects/${project.id}/edit`}>
-          <button className="btn btn-md btn-ghost hover:btn-neutral gap-2 flex-auto max-w-[6rem]">
+          <button className="btn btn-md btn-outline gap-2 flex-auto max-w-[6rem]">
             <Edit2 className="w-4 h-4" />
             Edit
           </button>
@@ -94,7 +94,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
         <button
           onClick={handleDelete}
           disabled={isDeleting}
-          className={`btn btn-md btn-ghost hover:btn-error gap-2 flex-auto max-w-[6rem] ${
+          className={`btn btn-md btn-outline btn-error gap-2 flex-auto max-w-[6rem] ${
             isDeleting ? "loading" : ""
           }`}
         >

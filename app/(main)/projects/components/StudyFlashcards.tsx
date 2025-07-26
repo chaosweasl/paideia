@@ -7,7 +7,9 @@ import {
   BookOpen,
   CheckCircle,
   XCircle,
+  Pencil,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface Flashcard {
   id: string;
@@ -17,13 +19,14 @@ interface Flashcard {
 
 interface StudyFlashcardsProps {
   flashcards: Flashcard[];
-  projectName: string;
+  projectName: string; // assumed to be a valid ID used in the URL path
 }
 
 export default function StudyFlashcards({
   flashcards,
   projectName,
 }: StudyFlashcardsProps) {
+  const router = useRouter();
   const [current, setCurrent] = useState(0);
   const [flipped, setFlipped] = useState(false);
   const [studyStats, setStudyStats] = useState({ correct: 0, incorrect: 0 });
@@ -31,7 +34,6 @@ export default function StudyFlashcards({
     [key: string]: "correct" | "incorrect" | null;
   }>({});
 
-  // Demo data for when no flashcards are provided
   const demoFlashcards = [
     { id: "1", question: "What is the capital of France?", answer: "Paris" },
     { id: "2", question: "What is 2 + 2?", answer: "4" },
@@ -46,7 +48,6 @@ export default function StudyFlashcards({
     flashcards && flashcards.length > 0 ? flashcards : demoFlashcards;
   const card = cards[current];
 
-  // Keyboard navigation
   const handleFlip = () => setFlipped((f) => !f);
 
   const handleNext = React.useCallback(() => {
@@ -120,24 +121,34 @@ export default function StudyFlashcards({
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[70vh] px-4 py-8">
-      {/* Header with stats */}
+    <div className="flex flex-col items-center justify-center min-h-[70vh]">
+      {/* Header */}
       <div className="w-full max-w-2xl mb-6">
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
           <h2 className="text-2xl md:text-3xl font-bold text-primary">
             Study: {projectName || "Demo Flashcards"}
           </h2>
-          <button
-            onClick={handleReset}
-            className="btn btn-ghost btn-sm gap-2"
-            title="Reset progress"
-          >
-            <RotateCcw className="w-4 h-4" />
-            Reset
-          </button>
+          <div className="flex flex-wrap gap-2">
+            <button
+              onClick={() => router.push(`/${projectName}/edit`)}
+              className="btn btn-outline btn-sm gap-2"
+              title="Edit flashcards"
+            >
+              <Pencil className="w-4 h-4" />
+              Edit
+            </button>
+            <button
+              onClick={handleReset}
+              className="btn btn-ghost btn-sm gap-2"
+              title="Reset progress"
+            >
+              <RotateCcw className="w-4 h-4" />
+              Reset
+            </button>
+          </div>
         </div>
 
-        {/* Progress bar */}
+        {/* Progress Bar */}
         <div className="w-full bg-base-200 rounded-full h-2 mb-4">
           <div
             className="bg-primary h-2 rounded-full transition-all duration-300 ease-out"
@@ -175,7 +186,7 @@ export default function StudyFlashcards({
             }`}
             style={{ willChange: "transform" }}
           >
-            {/* Card front */}
+            {/* Front */}
             <div
               className={`absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-base-100 to-base-200 shadow-xl rounded-2xl border-2 [backface-visibility:hidden] transition-all duration-300 ${
                 currentCardStatus === "correct"
@@ -185,8 +196,8 @@ export default function StudyFlashcards({
                   : "border-base-300 hover:border-primary/50"
               }`}
             >
-              <div className="text-center px-6 py-8">
-                <div className="text-xl md:text-2xl font-semibold text-base-content mb-6 leading-relaxed">
+              <div className="text-center px-4 py-6">
+                <div className="text-sm md:text-base lg:text-xl font-semibold text-base-content mb-6 leading-relaxed">
                   {card.question}
                 </div>
                 <div className="flex items-center justify-center gap-2 text-base-content/60 text-sm">
@@ -195,7 +206,7 @@ export default function StudyFlashcards({
               </div>
             </div>
 
-            {/* Card back */}
+            {/* Back */}
             <div
               className={`absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-primary/5 to-primary/10 shadow-xl rounded-2xl border-2 [backface-visibility:hidden] [transform:rotateY(180deg)] transition-all duration-300 ${
                 currentCardStatus === "correct"
@@ -205,8 +216,8 @@ export default function StudyFlashcards({
                   : "border-primary/30"
               }`}
             >
-              <div className="text-center px-6 py-8">
-                <div className="text-xl md:text-2xl font-semibold text-base-content mb-6 leading-relaxed">
+              <div className="text-center px-4 py-6">
+                <div className="text-sm md:text-base lg:text-xl font-semibold text-base-content mb-6 leading-relaxed">
                   {card.answer}
                 </div>
                 <div className="flex items-center justify-center gap-2 text-base-content/60 text-sm">
@@ -218,7 +229,7 @@ export default function StudyFlashcards({
         </div>
       </div>
 
-      {/* Study controls */}
+      {/* Controls */}
       {flipped && (
         <div className="flex gap-3 mb-6 animate-in fade-in duration-300">
           <button
@@ -247,9 +258,9 @@ export default function StudyFlashcards({
       )}
 
       {/* Navigation */}
-      <div className="flex items-center gap-4 flex-wrap justify-center">
+      <div className="flex items-center gap-2 flex-wrap justify-center">
         <button
-          className="btn btn-outline gap-2"
+          className="btn btn-md btn-outline"
           onClick={handlePrev}
           disabled={cards.length <= 1}
         >
@@ -257,14 +268,14 @@ export default function StudyFlashcards({
           Previous
         </button>
 
-        <div className="flex items-center gap-2 text-base-content/70 text-sm bg-base-200 px-4 py-2 rounded-full">
+        <div className="flex items-center gap-0.5 text-base-content/70 text-sm bg-base-200 px-4 py-2 rounded-full">
           <span className="font-medium">{current + 1}</span>
           <span>/</span>
           <span>{cards.length}</span>
         </div>
 
         <button
-          className="btn btn-primary gap-2"
+          className="btn btn-md btn-primary"
           onClick={handleNext}
           disabled={cards.length <= 1}
         >
@@ -273,7 +284,7 @@ export default function StudyFlashcards({
         </button>
       </div>
 
-      {/* Keyboard shortcuts hint */}
+      {/* Shortcuts */}
       <div className="mt-8 text-xs text-base-content/50 text-center">
         <div className="hidden lg:flex flex-wrap justify-center gap-4">
           <span>← / A: Previous</span>

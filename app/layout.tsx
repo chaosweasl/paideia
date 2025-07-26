@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { ToastProvider } from "@/components/toast-provider";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ProfileProvider } from "@/components/profile-provider";
+import EarlyDevWarning from "@/components/EarlyDevWarning";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -46,6 +47,8 @@ export default function RootLayout({
         <ToastProvider>
           <ProfileProvider>{children}</ProfileProvider>
         </ToastProvider>
+        {/* Early development warning fixed at bottom left */}
+        <EarlyDevWarning />
       </body>
     </html>
   );

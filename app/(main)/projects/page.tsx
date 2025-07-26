@@ -32,7 +32,7 @@ export default function ProjectsPage() {
               <EmptyState />
             </div>
           ) : (
-            <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 px-4 sm:px-6 lg:px-8">
+            <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 ">
               <ProjectList />
             </div>
           )}

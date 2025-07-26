@@ -286,7 +286,7 @@ export function FlashcardEditor({ project }: FlashcardEditorProps) {
                         {typeof card.question === "string"
                           ? card.question.length
                           : 0}
-                        /500
+                        /300
                       </span>
                     </label>
                     <textarea
@@ -304,7 +304,7 @@ export function FlashcardEditor({ project }: FlashcardEditorProps) {
                       onChange={(e) => handleChange("question", e.target.value)}
                       placeholder="What would you like to ask? Be clear and specific..."
                       disabled={saving}
-                      maxLength={500}
+                      maxLength={300}
                     />
                   </div>
 
@@ -317,7 +317,7 @@ export function FlashcardEditor({ project }: FlashcardEditorProps) {
                         {typeof card.answer === "string"
                           ? card.answer.length
                           : 0}
-                        /500
+                        /300
                       </span>
                     </label>
                     <textarea
@@ -330,7 +330,7 @@ export function FlashcardEditor({ project }: FlashcardEditorProps) {
                       onChange={(e) => handleChange("answer", e.target.value)}
                       placeholder="Provide a clear, concise answer..."
                       disabled={saving}
-                      maxLength={500}
+                      maxLength={300}
                     />
                   </div>
                 </div>
