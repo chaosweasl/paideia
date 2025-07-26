@@ -37,7 +37,7 @@ export function Header() {
   return (
     <header className="navbar bg-base-100 border-b border-base-200 px-4 min-h-16 sticky top-0 z-40">
       {/* Mobile menu button */}
-      <div className="navbar-start lg:hidden">
+      <div className="navbar-start md:hidden">
         <div className="dropdown">
           <div tabIndex={0} role="button" className="btn btn-ghost btn-circle">
             <Menu className="w-5 h-5" />
@@ -56,7 +56,7 @@ export function Header() {
       </div>
 
       {/* Logo */}
-      <div className="navbar-start hidden lg:flex">
+      <div className="navbar-start hidden md:flex">
         <Link href="/projects" className="btn btn-ghost text-xl font-bold">
           <Image
             src="/favicon.svg"
@@ -71,7 +71,7 @@ export function Header() {
       </div>
 
       {/* Center logo for mobile */}
-      <div className="navbar-center lg:hidden">
+      <div className="navbar-center md:hidden">
         <Link href="/projects" className="btn btn-ghost text-xl font-bold">
           <Image
             src="/favicon.svg"
@@ -86,7 +86,7 @@ export function Header() {
       </div>
 
       {/* Desktop navigation */}
-      <div className="navbar-center hidden lg:flex">
+      <div className="navbar-center hidden md:flex">
         <ul className="menu menu-horizontal px-1 gap-1">
           {navItems.map(({ href, label, icon: Icon }) => (
             <li key={href}>

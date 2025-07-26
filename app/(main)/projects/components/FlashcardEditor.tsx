@@ -218,7 +218,7 @@ export function FlashcardEditor({ project }: FlashcardEditorProps) {
                 </div>
 
                 {/* Validation Status */}
-                <div className="mt-6 p-3 rounded-lg bg-base-200/50">
+                <div className="mt-6 p-3 rounded-lg">
                   <div className="flex items-center gap-2 text-sm">
                     {isValid ? (
                       <>

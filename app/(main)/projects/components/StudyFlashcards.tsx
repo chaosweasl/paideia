@@ -275,7 +275,7 @@ export default function StudyFlashcards({
 
       {/* Keyboard shortcuts hint */}
       <div className="mt-8 text-xs text-base-content/50 text-center">
-        <div className="flex flex-wrap justify-center gap-4">
+        <div className="hidden lg:flex flex-wrap justify-center gap-4">
           <span>← / A: Previous</span>
           <span>→ / D: Next</span>
           <span>Space / F: Flip</span>
