@@ -37,7 +37,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
   };
 
   return (
-    <div className="w-full max-w-xl mx-auto bg-base-100 border border-base-300 rounded-2xl shadow-md hover:shadow-lg transition duration-200 overflow-hidden flex flex-col justify-between group focus-within:ring-2 focus-within:ring-primary">
+    <div className="flex flex-col justify-between w-full bg-base-100 border border-base-300 rounded-2xl shadow-md hover:shadow-lg transition duration-200 overflow-hidden group focus-within:ring-2 focus-within:ring-primary">
       {/* Project Info */}
       <div className="p-6 space-y-3 flex-1">
         {/* Header */}
@@ -67,38 +67,40 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
       </div>
 
       {/* Actions */}
-      <div className="bg-base-200 px-6 py-4 flex flex-col gap-3 border-t border-base-300">
-        <div className="flex flex-row justify-center items-center gap-4 w-full">
-          {hasFlashcards ? (
-            <Link href={`/projects/${project.id}`} className="">
-              <button className="btn btn-md btn-success gap-2 group-hover:scale-105 transition-transform">
-                <Play className="w-4 h-4" />
-                Study
-              </button>
-            </Link>
-          ) : (
-            <div className="text-warning text-sm flex items-center gap-2">
-              <div className="w-2 h-2 bg-warning rounded-full" />
-              No flashcards
-            </div>
-          )}
-          <Link href={`/projects/${project.id}/edit`} className="">
-            <button className="btn btn-md btn-ghost hover:btn-neutral gap-2 group-hover:scale-105 transition-transform">
-              <Edit2 className="w-4 h-4" />
-              Edit
+      <div className="bg-base-200 px-6 py-4 border-t border-base-300 flex flex-wrap justify-center items-center gap-3">
+        {hasFlashcards ? (
+          <Link href={`/projects/${project.id}`}>
+            <button className="btn btn-md btn-success gap-2 flex-auto max-w-[8rem]">
+              <Play className="w-4 h-4" />
+              Study
             </button>
           </Link>
+        ) : (
           <button
-            onClick={handleDelete}
-            disabled={isDeleting}
-            className={`btn btn-md btn-ghost hover:btn-error gap-2 ${
-              isDeleting ? "loading" : ""
-            } group-hover:scale-105 transition-transform`}
+            disabled
+            className="btn btn-md btn-disabled gap-2 flex-auto max-w-[8rem]"
           >
-            {!isDeleting && <Trash2 className="w-4 h-4" />}
-            Delete
+            <span className="text-xs text-warning">No flashcards</span>
           </button>
-        </div>
+        )}
+
+        <Link href={`/projects/${project.id}/edit`}>
+          <button className="btn btn-md btn-ghost hover:btn-neutral gap-2 flex-auto max-w-[8rem]">
+            <Edit2 className="w-4 h-4" />
+            Edit
+          </button>
+        </Link>
+
+        <button
+          onClick={handleDelete}
+          disabled={isDeleting}
+          className={`btn btn-md btn-ghost hover:btn-error gap-2 flex-auto max-w-[8rem] ${
+            isDeleting ? "loading" : ""
+          }`}
+        >
+          {!isDeleting && <Trash2 className="w-4 h-4" />}
+          Delete
+        </button>
       </div>
     </div>
   );
