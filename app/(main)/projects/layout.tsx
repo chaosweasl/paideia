@@ -43,12 +43,10 @@ export default function ProjectsLayout({
 
   return (
     <div className="flex min-h-screen bg-base-100">
-      {/* Desktop sidebar */}
-      <div className="hidden md:block w-64 flex-shrink-0 h-screen sticky top-0 z-30">
-        <SidebarNav activeTab="all" onTab={handleTab} />
+      <SidebarNav activeTab="all" onTab={handleTab} />
+      <div className="flex-1 flex flex-col min-h-screen md:ml-64">
+        {children}
       </div>
-      {/* Mobile sidebar */}
-      <div className="flex-1 flex flex-col min-h-screen">{children}</div>
     </div>
   );
 }

@@ -32,7 +32,12 @@ export function FlashcardEditor({ project }: FlashcardEditorProps) {
   const [name, setName] = useState(project.name);
   const [description, setDescription] = useState(project.description);
   const [flashcards, setFlashcards] = useState<Flashcard[]>(
-    project.flashcards || []
+    Array.isArray(project.flashcards)
+      ? project.flashcards.map((fc) => ({
+          question: typeof fc.question === "string" ? fc.question : "",
+          answer: typeof fc.answer === "string" ? fc.answer : "",
+        }))
+      : []
   );
   const [current, setCurrent] = useState(0);
   const [saving, setSaving] = useState(false);
@@ -46,10 +51,19 @@ export function FlashcardEditor({ project }: FlashcardEditorProps) {
         (fc) =>
           typeof fc.question === "string" &&
           typeof fc.answer === "string" &&
+          fc.question &&
+          typeof fc.question.trim === "function" &&
           fc.question.trim() &&
+          fc.answer &&
+          typeof fc.answer.trim === "function" &&
           fc.answer.trim()
       );
-    setIsValid(valid && typeof name === "string" && !!name.trim());
+    setIsValid(
+      valid &&
+        typeof name === "string" &&
+        typeof name.trim === "function" &&
+        !!name.trim()
+    );
   }, [flashcards, name]);
 
   function handleChange(field: keyof Flashcard, value: string) {
@@ -96,9 +110,17 @@ export function FlashcardEditor({ project }: FlashcardEditorProps) {
   }
 
   const card = flashcards[current] || { question: "", answer: "" };
-  const currentCardValid = card.question.trim() && card.answer.trim();
+  const currentCardValid =
+    typeof card.question === "string" &&
+    typeof card.answer === "string" &&
+    card.question.trim() &&
+    card.answer.trim();
   const completedCards = flashcards.filter(
-    (fc) => fc.question.trim() && fc.answer.trim()
+    (fc) =>
+      typeof fc.question === "string" &&
+      typeof fc.answer === "string" &&
+      fc.question.trim() &&
+      fc.answer.trim()
   ).length;
 
   return (
@@ -261,16 +283,24 @@ export function FlashcardEditor({ project }: FlashcardEditorProps) {
                         Question
                       </span>
                       <span className="label-text-alt text-base-content/50">
-                        {card.question.length}/500
+                        {typeof card.question === "string"
+                          ? card.question.length
+                          : 0}
+                        /500
                       </span>
                     </label>
                     <textarea
                       className={`textarea textarea-bordered w-full h-32 resize-none text-base transition-all duration-200 ${
-                        !card.question.trim()
+                        !(
+                          typeof card.question === "string" &&
+                          card.question.trim()
+                        )
                           ? "textarea-error"
                           : "focus:textarea-primary"
                       }`}
-                      value={card.question}
+                      value={
+                        typeof card.question === "string" ? card.question : ""
+                      }
                       onChange={(e) => handleChange("question", e.target.value)}
                       placeholder="What would you like to ask? Be clear and specific..."
                       disabled={saving}
@@ -284,16 +314,19 @@ export function FlashcardEditor({ project }: FlashcardEditorProps) {
                         Answer
                       </span>
                       <span className="label-text-alt text-base-content/50">
-                        {card.answer.length}/500
+                        {typeof card.answer === "string"
+                          ? card.answer.length
+                          : 0}
+                        /500
                       </span>
                     </label>
                     <textarea
                       className={`textarea textarea-bordered w-full h-32 resize-none text-base transition-all duration-200 ${
-                        !card.answer.trim()
+                        !(typeof card.answer === "string" && card.answer.trim())
                           ? "textarea-error"
                           : "focus:textarea-primary"
                       }`}
-                      value={card.answer}
+                      value={typeof card.answer === "string" ? card.answer : ""}
                       onChange={(e) => handleChange("answer", e.target.value)}
                       placeholder="Provide a clear, concise answer..."
                       disabled={saving}

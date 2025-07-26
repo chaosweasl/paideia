@@ -13,7 +13,10 @@ export function ProjectList() {
             ...project,
             formattedCreatedAt: project.formattedCreatedAt ?? "",
           }}
-          onDelete={deleteProjectById}
+          onDelete={async (id: string) => {
+            deleteProjectById(id);
+            return Promise.resolve();
+          }}
         />
       ))}
     </>
