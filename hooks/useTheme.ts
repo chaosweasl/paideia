@@ -25,7 +25,7 @@ export const useThemeStore = create<ThemeState>((set, get) => ({
   },
   toggleTheme: () => {
     const current = get().theme;
-    const next = current === "dim" ? "lemonade" : "dim";
+    const next = current === "darkgreen" ? "lightgreen" : "darkgreen";
     get().setTheme(next);
   },
 }));
