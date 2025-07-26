@@ -57,7 +57,7 @@ export function Header() {
 
       {/* Logo */}
       <div className="navbar-start hidden md:flex">
-        <Link href="/projects" className="btn btn-ghost text-xl font-bold">
+        <Link href="/dashboard" className="btn btn-ghost text-xl font-bold">
           <Image
             src="/favicon.svg"
             alt="Cognify"
@@ -72,7 +72,7 @@ export function Header() {
 
       {/* Center logo for mobile */}
       <div className="navbar-center md:hidden">
-        <Link href="/projects" className="btn btn-ghost text-xl font-bold">
+        <Link href="/dashboard" className="btn btn-ghost text-xl font-bold">
           <Image
             src="/favicon.svg"
             alt="Cognify"

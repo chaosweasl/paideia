@@ -15,7 +15,7 @@ export const EarlyDevWarning: React.FC = () => {
       <div className="relative">
         {/* DaisyUI tooltip for desktop, toggled for mobile */}
         <button
-          className="bg-error text-error-content rounded-full shadow-lg border border-error/30 p-2 text-xl font-bold focus:outline-none focus:ring-2 focus:ring-warning/60"
+          className="bg-error text-error-content rounded-full shadow-lg border border-error/30 p-2 text-xl focus:outline-none focus:ring-2 focus:ring-warning/60"
           tabIndex={0}
           onClick={() => isMobile && setShowTooltip((v) => !v)}
           onMouseEnter={() => !isMobile && setShowTooltip(true)}
@@ -27,7 +27,7 @@ export const EarlyDevWarning: React.FC = () => {
         </button>
         {/* Tooltip */}
         <div
-          className={`tooltip tooltip-error tooltip-left ${
+          className={`tooltip tooltip-error tooltip-left font-semibold ${
             showTooltip ? "tooltip-open" : ""
           }`}
           data-tip="This app is in early development. Data and features may be volatile."
