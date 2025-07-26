@@ -21,7 +21,6 @@ import { signOut } from "../actions";
 export function Header() {
   const { theme, toggleTheme } = useThemeStore();
   const { userProfile } = useUserProfileStore();
-  const [drawerOpen, setDrawerOpen] = React.useState(false);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -36,7 +35,7 @@ export function Header() {
   ];
 
   return (
-    <header className="navbar bg-base-100 border-b border-base-200 px-4 min-h-16">
+    <header className="navbar bg-base-100 border-b border-base-200 px-4 min-h-16 sticky top-0 z-40">
       {/* Mobile menu button */}
       <div className="navbar-start lg:hidden">
         <div className="dropdown">

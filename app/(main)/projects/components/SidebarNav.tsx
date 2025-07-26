@@ -59,7 +59,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({ activeTab, onTab }) => {
   // Prevent SSR hydration mismatch - show basic version until mounted
   if (!hasMounted) {
     return (
-      <nav className="hidden md:flex flex-col h-[calc(100vh-70px)] sticky top-[70px] w-64 bg-base-200/50 border-r border-base-300/60 backdrop-blur-sm">
+      <nav className="hidden md:flex flex-col h-[calc(100vh-4rem)] sticky top-[64px] w-64 bg-base-200/50 border-r border-base-300/60 backdrop-blur-sm">
         {/* Header Section */}
         <div className="p-4 border-b border-base-300/60">
           <h2 className="text-lg font-semibold text-base-content/90 flex items-center gap-2">
@@ -207,7 +207,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({ activeTab, onTab }) => {
               ? `fixed top-0 left-0 h-screen z-40 transition-transform duration-300 ${
                   isOpen ? "translate-x-0" : "-translate-x-full"
                 }`
-              : "sticky top-[70px] h-[calc(100vh-80px)] hidden md:flex"
+              : "sticky top-[64px] h-[calc(100vh-4rem)] hidden md:flex"
           }
         `}
       >
