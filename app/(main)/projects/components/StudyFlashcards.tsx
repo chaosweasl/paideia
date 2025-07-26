@@ -121,7 +121,7 @@ export default function StudyFlashcards({
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[70vh] px-4 py-8">
+    <div className="flex flex-col items-center justify-center min-h-[70vh]">
       {/* Header */}
       <div className="w-full max-w-2xl mb-6">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
@@ -196,8 +196,8 @@ export default function StudyFlashcards({
                   : "border-base-300 hover:border-primary/50"
               }`}
             >
-              <div className="text-center px-6 py-8">
-                <div className="text-xl md:text-2xl font-semibold text-base-content mb-6 leading-relaxed">
+              <div className="text-center px-4 py-6">
+                <div className="text-sm md:text-base lg:text-xl font-semibold text-base-content mb-6 leading-relaxed">
                   {card.question}
                 </div>
                 <div className="flex items-center justify-center gap-2 text-base-content/60 text-sm">
@@ -216,8 +216,8 @@ export default function StudyFlashcards({
                   : "border-primary/30"
               }`}
             >
-              <div className="text-center px-6 py-8">
-                <div className="text-xl md:text-2xl font-semibold text-base-content mb-6 leading-relaxed">
+              <div className="text-center px-4 py-6">
+                <div className="text-sm md:text-base lg:text-xl font-semibold text-base-content mb-6 leading-relaxed">
                   {card.answer}
                 </div>
                 <div className="flex items-center justify-center gap-2 text-base-content/60 text-sm">
