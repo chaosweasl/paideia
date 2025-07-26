@@ -207,7 +207,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({ activeTab, onTab }) => {
               ? `fixed top-0 left-0 h-screen z-40 transition-transform duration-300 ${
                   isOpen ? "translate-x-0" : "-translate-x-full"
                 }`
-              : "sticky top-[64px] h-[calc(100vh-4rem)] hidden md:flex"
+              : "fixed top-[64px] left-0 h-[calc(100vh-4rem)] hidden md:flex z-30"
           }
         `}
       >
